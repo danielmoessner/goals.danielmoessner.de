@@ -7,6 +7,7 @@ from django.utils import timezone
 from apps.todos.models import (
     NeverEndingTodo,
     NormalTodo,
+    NotesTodo,
     PipelineTodo,
     RepetitiveTodo,
     Todo,
@@ -46,4 +47,5 @@ def todos(request: HttpRequest):
 
         todos += Todo.get_to_dos_user(request.user, cls).filter(f)
     todos = list_sort(todos, lambda t: t.completed_sort)
-    return render(request, "todos.html", {"todos": todos})
+    notes = NotesTodo.objects.filter(user=request.user, status="ACTIVE")
+    return render(request, "todos.html", {"todos": todos, "notes": notes})

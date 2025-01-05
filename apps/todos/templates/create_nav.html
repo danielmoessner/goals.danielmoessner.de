@@ -20,5 +20,9 @@
             <a class="{% if 'CreatePipelineTodo' in request.get_full_path %}underline{% endif %}"
                href="{% url 'form' 'CreatePipelineTodo' %}?success={% url 'todos' %}">Pipeline</a>
         </li>
+        <li>
+            <a class="{% if 'CreateNotesTodo' in request.get_full_path %}underline{% endif %}"
+               href="{% url 'form' 'CreateNotesTodo' %}?success={% url 'todos' %}">Notes</a>
+        </li>
     </ul>
 </nav>

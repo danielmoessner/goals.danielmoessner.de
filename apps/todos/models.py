@@ -15,7 +15,6 @@ class Todo(models.Model):
     )
     activate = models.DateTimeField(null=True, blank=True)
     deadline = models.DateTimeField(null=True, blank=True)
-    notes = models.TextField(null=True, blank=True)
     completed = models.DateTimeField(null=True, blank=True)
     status_choices = (("ACTIVE", "Active"), ("DONE", "Done"), ("FAILED", "Failed"))
     status = models.CharField(choices=status_choices, max_length=20, default="ACTIVE")
@@ -306,3 +305,7 @@ class PipelineTodo(Todo):
     previous = models.ForeignKey(
         Todo, null=True, on_delete=models.SET_NULL, related_name="pipeline_to_dos"
     )
+
+
+class NotesTodo(Todo):
+    notes = models.TextField(null=True, blank=True)

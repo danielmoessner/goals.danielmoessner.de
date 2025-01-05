@@ -8,6 +8,7 @@ from django.utils import timezone
 from apps.todos.models import (
     NeverEndingTodo,
     NormalTodo,
+    NotesTodo,
     PipelineTodo,
     RepetitiveTodo,
     Todo,
@@ -160,6 +161,35 @@ class UpdateNeverEndingTodo(OptsUserInstance[NeverEndingTodo], forms.ModelForm):
 
     def init(self):
         setup_datetime_field(self.fields["activate"])
+
+    def ok(self) -> int:
+        self.instance.save()
+        return self.instance.pk
+
+
+class CreateNotesTodo(OptsUserInstance[NotesTodo], forms.ModelForm):
+    navs = ["todos", "create"]
+
+    class Meta:
+        model = NotesTodo
+        fields = ["name", "notes"]
+
+    def ok(self):
+        self.instance.user = self.user
+        self.instance.activate = timezone.now()
+        self.instance.save()
+        return self.instance.pk
+
+
+class UpdateNotesTodo(OptsUserInstance[NotesTodo], forms.ModelForm):
+    navs = ["todos"]
+
+    class Meta:
+        model = NotesTodo
+        fields = ["name", "notes"]
+
+    def get_instance(self):
+        return NotesTodo.objects.get(pk=self.opts["pk"], user=self.user)
 
     def ok(self) -> int:
         self.instance.save()

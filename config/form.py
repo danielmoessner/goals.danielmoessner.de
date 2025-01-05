@@ -26,12 +26,14 @@ from apps.story.forms import UpdateStory
 from apps.todos.forms import (
     CreateNeverEndingTodo,
     CreateNormalTodo,
+    CreateNotesTodo,
     CreatePipelineTodo,
     CreateRepetitiveTodo,
     DeleteTodo,
     ToggleTodo,
     UpdateNeverEndingTodo,
     UpdateNormalTodo,
+    UpdateNotesTodo,
     UpdateRepetitiveTodo,
     UpdateTodoSettings,
 )
@@ -63,6 +65,8 @@ FORMS: list[type[FormClass]] = [
     ToggleTodo,
     CreateNeverEndingTodo,
     CreateRepetitiveTodo,
+    CreateNotesTodo,
+    UpdateNotesTodo,
     UpdateRepetitiveTodo,
     CreatePipelineTodo,
     CreateAchievement,

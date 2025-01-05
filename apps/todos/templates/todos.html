@@ -16,14 +16,23 @@
                 <div class="{% if t.is_overdue %}text-red-600{% endif %}">
                     <span class="block text-sm font-bold">
                         {{ t.name }}
-                        <a class="ml-3"
-                           href="{% url 'form' 'Update'|add:t.type %}?pk={{ t.pk }}&success={{ request.get_full_path }}">U</a>
-                        <a class="ml-1"
-                           href="{% url 'form' 'DeleteTodo' %}?pk={{ t.pk }}&success={{ request.get_full_path }}">D</a>
+                        {% include 'todos/symbols/buttons.html' %}
                     </span>
                     {% if t.due_in_str %}<span class="block text-xs leading-none">{{ t.due_in_str }}</span>{% endif %}
                 </div>
             </li>
         {% endfor %}
     </ul>
+    <hr>
+    <div class="grid grid-cols-3 gap-2 p-5">
+        {% for t in notes %}
+            <div class="px-3 py-2 border">
+                <span class="font-medium">{{ t.name }}
+                    {% include 'todos/symbols/buttons.html' %}
+                </span>
+                <p>{{ t.notes }}</p>
+            </div>
+        {% endfor %}
+    </div>
+</div>
 {% endblock %}
