@@ -1692,6 +1692,11 @@ b {
   padding-bottom: 0.5rem;
 }
 
+.py-1 {
+  padding-top: 0.25rem;
+  padding-bottom: 0.25rem;
+}
+
 .pb-12 {
   padding-bottom: 3rem;
 }
@@ -1702,6 +1707,14 @@ b {
 
 .pt-4 {
   padding-top: 1rem;
+}
+
+.pb-0\.5 {
+  padding-bottom: 0.125rem;
+}
+
+.pt-1 {
+  padding-top: 0.25rem;
 }
 
 .text-7xl {
@@ -1727,6 +1740,11 @@ b {
 .text-xs {
   font-size: 0.75rem;
   line-height: 1rem;
+}
+
+.text-lg {
+  font-size: 1.125rem;
+  line-height: 1.75rem;
 }
 
 .font-bold {
