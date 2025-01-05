@@ -23,16 +23,18 @@
             </li>
         {% endfor %}
     </ul>
-    <hr>
-    <div class="grid grid-cols-3 gap-2 p-5">
-        {% for t in notes %}
-            <div class="px-3 py-2 border">
-                <span class="font-medium">{{ t.name }}
-                    {% include 'todos/symbols/buttons.html' %}
-                </span>
-                <p>{{ t.notes }}</p>
-            </div>
-        {% endfor %}
-    </div>
+    {% if notes %}
+        <hr>
+        <div class="grid grid-cols-3 gap-2 p-5">
+            {% for t in notes %}
+                <div class="px-3 py-2 border">
+                    <span class="font-medium">{{ t.name }}
+                        {% include 'todos/symbols/buttons.html' %}
+                    </span>
+                    <p>{{ t.notes }}</p>
+                </div>
+            {% endfor %}
+        </div>
+    {% endif %}
 </div>
 {% endblock %}
