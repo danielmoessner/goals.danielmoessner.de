@@ -1,10 +1,10 @@
 <hr>
 <div class="p-5">
     <form method="post"
-          class=""
+          class="flex space-x-2x"
           action="{% url 'form' 'CreateTodoFast' %}?success={{ request.get_full_path }}">
-        <input type="text" name="name" placeholder="Add Todo..." />
-        {% include 'btn/secondary_submit.html' with text="Add" %}
+        <input type="text" class="inline-block h-8 px-3 border rounded-md rounded-r-none shadow-none appearance-none focus:z-10 text-slate-900 border-form/50 ring-form focus:ring-1 focus:border-form focus:outline-none sm:text-sm" name="name" placeholder="Add Todo..." />
+        {% include 'btn/secondary_submit.html' with text="Add" class="h-8 border border-l-0 rounded-l-none border-form/50" %}
         {% csrf_token %}
     </form>
 </div>
