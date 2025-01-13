@@ -30,6 +30,18 @@ OPTS = dict[str, Any]
 T = TypeVar("T", bound=models.Model)
 
 
+class CreateTodoFast(OptsUserInstance[Todo], forms.ModelForm):
+    class Meta:
+        model = NormalTodo
+        fields = ["name"]
+
+    def ok(self):
+        self.instance.user = self.user
+        self.instance.activate = timezone.now()
+        self.instance.save()
+        return self.instance.pk
+
+
 class CreateNormalTodo(OptsUserInstance[NormalTodo], forms.ModelForm):
     navs = ["todos", "create"]
 

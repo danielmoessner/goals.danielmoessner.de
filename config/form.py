@@ -29,6 +29,7 @@ from apps.todos.forms import (
     CreateNotesTodo,
     CreatePipelineTodo,
     CreateRepetitiveTodo,
+    CreateTodoFast,
     DeleteTodo,
     ToggleTodo,
     UpdateNeverEndingTodo,
@@ -58,6 +59,7 @@ class FormClass(Protocol):
 
 # improve to import automatically
 FORMS: list[type[FormClass]] = [
+    CreateTodoFast,
     CreateNormalTodo,
     UpdateNormalTodo,
     UpdateNeverEndingTodo,

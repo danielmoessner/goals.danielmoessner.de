@@ -5,5 +5,5 @@
     {% include 'form_snippet.html' %}
     {% csrf_token %}
     <p class="">{{ form.text }}</p>
-    <button type="submit">{{ form.submit|default:'Submit' }}</button>
+    {% include 'btn/submit.html' with text=form.submit|default:'Submit' class="mt-5" %}
 </form>
