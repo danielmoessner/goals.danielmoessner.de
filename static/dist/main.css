@@ -1655,6 +1655,14 @@ b {
   background-color: rgb(71 85 105 / var(--tw-bg-opacity));
 }
 
+.bg-form\/20 {
+  background-color: rgb(71 85 105 / 0.2);
+}
+
+.bg-form\/10 {
+  background-color: rgb(71 85 105 / 0.1);
+}
+
 .p-10 {
   padding: 2.5rem;
 }
@@ -1818,6 +1826,11 @@ b {
 .text-white {
   --tw-text-opacity: 1;
   color: rgb(255 255 255 / var(--tw-text-opacity));
+}
+
+.text-form {
+  --tw-text-opacity: 1;
+  color: rgb(71 85 105 / var(--tw-text-opacity));
 }
 
 .underline {
@@ -2177,6 +2190,18 @@ a.disabled, button.disabled {
   background-color: rgb(71 85 105 / 0.8);
 }
 
+.hover\:bg-form\/60:hover {
+  background-color: rgb(71 85 105 / 0.6);
+}
+
+.hover\:bg-form\/40:hover {
+  background-color: rgb(71 85 105 / 0.4);
+}
+
+.hover\:bg-form\/20:hover {
+  background-color: rgb(71 85 105 / 0.2);
+}
+
 .focus-visible\:outline:focus-visible {
   outline-style: solid;
 }
@@ -2191,6 +2216,10 @@ a.disabled, button.disabled {
 
 .focus-visible\:outline-form:focus-visible {
   outline-color: #475569;
+}
+
+.focus-visible\:outline-form\/20:focus-visible {
+  outline-color: rgb(71 85 105 / 0.2);
 }
 
 @media (min-width: 640px) {
