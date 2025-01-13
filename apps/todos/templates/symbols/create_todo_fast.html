@@ -1,0 +1,10 @@
+<hr>
+<div class="p-5">
+    <form method="post"
+          class=""
+          action="{% url 'form' 'CreateTodoFast' %}?success={{ request.get_full_path }}">
+        <input type="text" name="name" placeholder="Add Todo..." />
+        {% include 'btn/submit.html' with text="Add" %}
+        {% csrf_token %}
+    </form>
+</div>

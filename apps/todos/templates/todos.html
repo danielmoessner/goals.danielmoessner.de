@@ -2,53 +2,8 @@
 {% block prose %}
     {% include 'nav.html' %}
     {% include 'todos/nav.html' %}
-    <ul class="p-5 space-y-2 list-disc list-inside">
-        {% for t in todos %}
-            <li class="flex relative items-center group [&_a]:text-blue-600">
-                <form class="flex mr-2"
-                      method="post"
-                      action="{% url 'form' 'ToggleTodo' %}?pk={{ t.pk }}&success={% url 'todos' %}">
-                    {% csrf_token %}
-                    <input type="checkbox"
-                           onChange="this.form.submit()"
-                           {% if t.is_done %}checked{% endif %} />
-                </form>
-                <div class="{% if t.is_overdue %}text-red-600{% endif %}">
-                    <span class="block text-sm font-bold">
-                        {{ t.name }}
-                        {% include 'todos/symbols/buttons.html' %}
-                    </span>
-                    {% if t.due_in_str %}<span class="block text-xs leading-none">{{ t.due_in_str }}</span>{% endif %}
-                </div>
-            </li>
-        {% endfor %}
-    </ul>
-    <hr>
-    <div class="p-5">
-        <form method="post"
-              class=""
-              action="{% url 'form' 'CreateTodoFast' %}?success={{ request.get_full_path }}">
-            <input type="text" name="name" placeholder="Add Todo..." />
-            {% include 'btn/submit.html' with text="Add" %}
-            {% csrf_token %}
-        </form>
-    </div>
-    {% if notes %}
-        <hr>
-        <div class="grid sm:grid-cols-3 gap-2 p-5">
-            {% for t in notes %}
-                <div class="border">
-                    <div class="pt-1 pb-0.5 px-2 font-bold">
-                        {{ t.name }}
-                        {% include 'todos/symbols/buttons.html' %}
-                    </div>
-                    <hr>
-                    <div class="px-2 py-1">
-                        <p>{{ t.notes|linebreaksbr }}</p>
-                    </div>
-                </div>
-            {% endfor %}
-        </div>
-    {% endif %}
+    {% include 'todos/symbols/todos.html' %}
+    {% include 'todos/symbols/create_todo_fast.html' %}
+    {% include 'todos/symbols/notes.html' %}
 </div>
 {% endblock %}

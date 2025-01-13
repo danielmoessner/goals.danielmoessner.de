@@ -1,0 +1,21 @@
+<ul class="p-5 space-y-2 list-disc list-inside">
+    {% for t in todos %}
+        <li class="flex relative items-center group [&_a]:text-blue-600">
+            <form class="flex mr-2"
+                  method="post"
+                  action="{% url 'form' 'ToggleTodo' %}?pk={{ t.pk }}&success={% url 'todos' %}">
+                {% csrf_token %}
+                <input type="checkbox"
+                       onChange="this.form.submit()"
+                       {% if t.is_done %}checked{% endif %} />
+            </form>
+            <div class="{% if t.is_overdue %}text-red-600{% endif %}">
+                <span class="block text-sm font-bold">
+                    {{ t.name }}
+                    {% include 'todos/symbols/buttons.html' %}
+                </span>
+                {% if t.due_in_str %}<span class="block text-xs leading-none">{{ t.due_in_str }}</span>{% endif %}
+            </div>
+        </li>
+    {% endfor %}
+</ul>
