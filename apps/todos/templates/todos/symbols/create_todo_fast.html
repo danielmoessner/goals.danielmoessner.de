@@ -3,7 +3,10 @@
     <form method="post"
           class="flex space-x-2x"
           action="{% url 'form' 'CreateTodoFast' %}?success={{ request.get_full_path }}">
-        <input type="text" class="inline-block h-8 px-3 border rounded-md rounded-r-none shadow-none appearance-none focus:z-10 text-slate-900 border-form/50 ring-form focus:ring-1 focus:border-form focus:outline-none sm:text-sm" name="name" placeholder="Add Todo..." />
+        <input type="text"
+               class="inline-block h-8 px-3 border rounded-md rounded-r-none shadow-none appearance-none focus:z-10 text-slate-900 border-form/50 ring-form focus:ring-1 focus:border-form focus:outline-none sm:text-sm"
+               name="name"
+               placeholder="Add Todo..." />
         {% include 'btn/secondary_submit.html' with text="Add" class="h-8 border border-l-0 rounded-l-none border-form/50" %}
         {% csrf_token %}
     </form>
