@@ -47,5 +47,14 @@ def todos(request: HttpRequest):
 
         todos += Todo.get_to_dos_user(request.user, cls).filter(f)
     todos = list_sort(todos, lambda t: t.completed_sort)
-    notes = NotesTodo.objects.filter(user=request.user, status="ACTIVE")
-    return render(request, "todos.html", {"todos": todos, "notes": notes})
+    top_notes = NotesTodo.objects.filter(
+        user=request.user, status="ACTIVE", position=NotesTodo.POSITION_TOP
+    )
+    bottom_notes = NotesTodo.objects.filter(
+        user=request.user, status="ACTIVE", position=NotesTodo.POSITION_BOTTOM
+    )
+    return render(
+        request,
+        "todos.html",
+        {"todos": todos, "top_notes": top_notes, "bottom_notes": bottom_notes},
+    )

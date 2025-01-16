@@ -309,3 +309,7 @@ class PipelineTodo(Todo):
 
 class NotesTodo(Todo):
     notes = models.TextField(null=True, blank=True)
+    POSITION_TOP = "TOP"
+    POSITION_BOTTOM = "BOTTOM"
+    POSITION_CHOICES = ((POSITION_TOP, "Top"), (POSITION_BOTTOM, "Bottom"))
+    position = models.CharField(choices=POSITION_CHOICES, max_length=20, default="TOP")

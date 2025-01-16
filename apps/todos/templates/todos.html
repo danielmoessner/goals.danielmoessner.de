@@ -2,8 +2,9 @@
 {% block prose %}
     {% include 'nav.html' %}
     {% include 'todos/nav.html' %}
-    {% include 'todos/symbols/notes.html' %}
+    {% include 'todos/symbols/notes.html' with notes=top_notes position='top' %}
     {% include 'todos/symbols/todos.html' %}
     {% include 'todos/symbols/create_todo_fast.html' %}
+    {% include 'todos/symbols/notes.html' with notes=bottom_notes position='bottom' %}
 </div>
 {% endblock %}
