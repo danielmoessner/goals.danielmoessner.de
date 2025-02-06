@@ -158,3 +158,5 @@ CORS_ALLOWED_ORIGINS = ["https://goals.danielmoessner.de", "http://localhost:300
 DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
 
 CUSTOM_ALLOW_REGISTRATION = True
+
+SESSION_COOKIE_AGE = 60 * 60 * 24 * 365  # 1 year
