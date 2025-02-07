@@ -18,6 +18,7 @@ from apps.todos.utils import (
     get_datetime_widget,
     get_end_of_week,
     get_specific_todo,
+    get_start_of_next_week,
     get_start_of_week,
     setup_datetime_field,
     setup_duration_field,
@@ -36,8 +37,12 @@ class CreateTodoFast(OptsUserInstance[Todo], forms.ModelForm):
         fields = ["name"]
 
     def ok(self):
+        if self.opts.get("kind", "") == "next_week":
+            activate = get_start_of_next_week()
+        else:
+            activate = timezone.now()
         self.instance.user = self.user
-        self.instance.activate = timezone.now()
+        self.instance.activate = activate
         self.instance.save()
         return self.instance.pk
 
