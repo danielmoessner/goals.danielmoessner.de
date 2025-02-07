@@ -1,6 +1,7 @@
 [tool.pytest.ini_options]
 DJANGO_SETTINGS_MODULE = "config.settings.local"
 
+
 [tool.black]
 line-length = 88
 
@@ -18,3 +19,19 @@ authors = [
 ]
 readme = "README.md"
 license = {text = "NONE"}
+dependencies = [
+    "django==5.1.*",
+    "black==25.*",
+    "django-cors-headers==4.*",
+    "django-debug-toolbar==5.*",
+    "django-filebrowser-no-grappelli==4.0.*",
+    "django-tinymce==4.1.*",
+    "djlint==1.36.*",
+    "isort==6.*",
+    "pillow==11.*",
+    "pipdeptree==2.*",
+    "pytest-django==4.9.*",
+    "pytz==2025.*",
+    "ruff==0.9.*",
+]
+requires-python = ">=3.11"

@@ -1,1 +1,1 @@
-pip-check
+uv run pip list --outdated

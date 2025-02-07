@@ -1,5 +1,8 @@
+build
+*.egg-info
 tmp/**/*
 .idea/**/*
 **/__pycache__/**/*
 node_modules
 .codegpt
+.ruff_cache
