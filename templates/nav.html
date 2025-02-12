@@ -20,7 +20,7 @@
             <a href="{% url 'form' 'ChangeEmail' %}">Settings</a>
         </li>
         <li>
-            <form action="{% url 'admin:logout' %}" method="post">
+            <form action="{% url 'logout' %}" method="post">
                 {% csrf_token %}
                 <button type="submit">Logout</button>
             </form>
