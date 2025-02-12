@@ -2,6 +2,7 @@ from typing import Any, Protocol
 
 from django.conf import settings
 from django.contrib.auth.models import AbstractBaseUser, AnonymousUser
+from django.contrib.auth.views import redirect_to_login
 from django.http import HttpRequest, HttpResponse
 from django.shortcuts import redirect, render
 
@@ -41,6 +42,7 @@ from apps.todos.forms import (
 from apps.users.forms import ChangeEmail, ChangePassword, Login, Register, ResetPassword
 from apps.users.models import CustomUser
 from apps.utils.functional import list_map
+from config.errors import GetFormError, InvalidUserError
 
 
 class FormClass(Protocol):
@@ -114,10 +116,6 @@ def get_name(cls: type[object]):
 FORMS_DICT: dict[str, type[FormClass]] = {get_name(c): c for c in FORMS}
 
 
-class GetFormError(Exception):
-    pass
-
-
 def get_form_class(form_name: str | None) -> type[FormClass]:
     if form_name is None:
         raise GetFormError("form needs to be supplied")
@@ -161,7 +159,10 @@ def form_view(
             else:
                 data[key] = v
 
-    form = form_class(request.user, opts=request.GET.dict(), data=data)
+    try:
+        form = form_class(request.user, opts=request.GET.dict(), data=data)
+    except InvalidUserError:
+        return redirect_to_login(request.get_full_path(), settings.LOGIN_URL)
     set_request(form, request)
     if request.method == "POST" and form.is_valid():
         ret = form.ok()

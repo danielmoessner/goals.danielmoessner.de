@@ -4,6 +4,7 @@ from django.contrib.auth.models import AbstractBaseUser, AnonymousUser
 from django.db import models
 
 from apps.users.models import CustomUser
+from config.errors import InvalidUserError
 
 USER = AbstractBaseUser | AnonymousUser | CustomUser
 OPTS = dict[str, Any]
@@ -31,7 +32,8 @@ class OptsUserInstance(Generic[T]):
         return None
 
     def __init__(self, user: USER, opts: OPTS, *args, **kwargs):
-        assert isinstance(user, CustomUser), type(user)
+        if not isinstance(user, CustomUser):
+            raise InvalidUserError()
         self.user = user
         self.opts = opts
         instance = self.get_instance()
