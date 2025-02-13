@@ -1,20 +1,22 @@
-<nav id="todos-nav" class="{% include 'nav.txt' %} bg-slate-600">
-    <ul class="">
-        <li>
-            <a class="{% if 'ChangeEmail' in request.get_full_path %}underline{% endif %}"
-               href="{% url 'form' 'ChangeEmail' %}">Change E-Mail</a>
-        </li>
-        <li>
-            <a class="{% if 'ChangePassword' in request.get_full_path %}underline{% endif %}"
-               href="{% url 'form' 'ChangePassword' %}">Change Password</a>
-        </li>
-        <li>
-            <a class="{% if 'UpdateTodoSettings' in request.get_full_path %}underline{% endif %}"
-               href="{% url 'form' 'UpdateTodoSettings' %}">Todos Settings</a>
-        </li>
-        <li>
-            <a class="{% if 'UpdateGoalSettings' in request.get_full_path %}underline{% endif %}"
-               href="{% url 'form' 'UpdateGoalSettings' %}">Goals Settings</a>
-        </li>
-    </ul>
-</nav>
+<div class="overflow-visible overflow-x-auto bg-slate-600">
+    <nav id="todos-nav" class="{% include 'nav.txt' %}">
+        <ul class="">
+            <li>
+                <a class="{% if 'ChangeEmail' in request.get_full_path %}underline{% endif %}"
+                   href="{% url 'form' 'ChangeEmail' %}">Change E-Mail</a>
+            </li>
+            <li>
+                <a class="{% if 'ChangePassword' in request.get_full_path %}underline{% endif %}"
+                   href="{% url 'form' 'ChangePassword' %}">Change Password</a>
+            </li>
+            <li>
+                <a class="{% if 'UpdateTodoSettings' in request.get_full_path %}underline{% endif %}"
+                   href="{% url 'form' 'UpdateTodoSettings' %}">Todos Settings</a>
+            </li>
+            <li>
+                <a class="{% if 'UpdateGoalSettings' in request.get_full_path %}underline{% endif %}"
+                   href="{% url 'form' 'UpdateGoalSettings' %}">Goals Settings</a>
+            </li>
+        </ul>
+    </nav>
+</div>

@@ -1,1 +1,17 @@
-px-3 py-2 md:py-1 rounded-tsm text-slate-100 [&_li_a]:whitespace-nowrap md:[&_li_a]:px-0 md:[&_li_a]:py-0 [&_li_a]:px-5 [&_li_a]:py-0.5 [&_li_a]:inline-block [&_li_a]:rounded [&_li_a]:border-2 md:[&_li_a]:border-none [&_ul]:flex [&_ul]:max-w-full [&_ul]:space-x-4 [&_ul]:overflow-x-auto [&_ul]:overflow-visible focus:[&_li_a]:bg-white/20 hover:[&_li_a]:bg-white/20 focus-visible:[&_li_a]:bg-white/20 md:[&_li_a]:!bg-transparent
+px-3 py-2 md:py-1 rounded-tsm text-slate-100 
+
+[&_ul]:flex [&_ul]:max-w-full [&_ul]:space-x-1 
+
+[&_li_a]:whitespace-nowrap md:[&_li_a]:px-1.5 md:[&_li_a]:py-0 [&_li_a]:px-5 [&_li_a]:py-0.5 [&_li_a]:inline-block [&_li_a]:rounded [&_li_a]:border-2 
+hover:[&_li_a]:bg-white/20 
+focus:[&_li_a]:bg-white/20 focus:[&_li_a]:outline-none
+focus-visible:[&_li_a]:bg-white/20 focus-visible:[&_li_a]:outline-none  
+md:[&_li_a]:border-none md:[&_li_a]:!bg-transparent 
+focus:md:[&_li_a]:ring-1 focus:md:[&_li_a]:ring-offset-1 focus:md:[&_li_a]:ring-gray-100/20
+
+[&_li_button]:whitespace-nowrap md:[&_li_button]:px-1.5 md:[&_li_button]:py-0 [&_li_button]:px-5 [&_li_button]:py-0.5 [&_li_button]:inline-block [&_li_button]:rounded [&_li_button]:border-2 
+hover:[&_li_button]:bg-white/20 
+focus:[&_li_button]:bg-white/20 focus:[&_li_button]:outline-none
+focus-visible:[&_li_button]:bg-white/20 focus-visible:[&_li_button]:outline-none  
+md:[&_li_button]:border-none md:[&_li_button]:!bg-transparent 
+focus:md:[&_li_button]:ring-1 focus:md:[&_li_button]:ring-offset-1 focus:md:[&_li_button]:ring-gray-100/20

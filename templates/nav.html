@@ -1,29 +1,30 @@
-<nav id="todos-nav"
-     class="{% include 'nav.txt' %} rounded-none md:rounded-t bg-slate-700">
-    <ul class="flex space-x-4">
-        <li class="{% if 'todo' in request.get_full_path %}underline{% endif %}">
-            <a href="{% url 'todos' %}">Todos</a>
-        </li>
-        <li class="{% if 'achievements' in request.get_full_path %}underline{% endif %}">
-            <a href="{% url 'achievements' %}">Achievements</a>
-        </li>
-        <li class="{% if 'notes' in request.get_full_path %}underline{% endif %}">
-            <a href="{% url 'notes' %}">Notes</a>
-        </li>
-        <li class="{% if 'story' in request.get_full_path %}underline{% endif %}">
-            <a href="{% url 'story' %}">Story</a>
-        </li>
-        <li class="{% if 'goals' in request.get_full_path %}underline{% endif %}">
-            <a href="{% url 'goals' %}">Goals</a>
-        </li>
-        <li class="!ml-auto {% if 'users' in request.get_full_path %}underline{% endif %}">
-            <a href="{% url 'form' 'ChangeEmail' %}">Settings</a>
-        </li>
-        <li>
-            <form action="{% url 'logout' %}" method="post">
-                {% csrf_token %}
-                <button type="submit">Logout</button>
-            </form>
-        </li>
-    </ul>
-</nav>
+<div class="overflow-visible overflow-x-auto bg-slate-700 md:rounded-t">
+    <nav id="todos-nav" class="{% include 'nav.txt' %} rounded-none">
+        <ul class="flex space-x-4">
+            <li class="{% if 'todo' in request.get_full_path %}underline{% endif %}">
+                <a href="{% url 'todos' %}">Todos</a>
+            </li>
+            <li class="{% if 'achievements' in request.get_full_path %}underline{% endif %}">
+                <a href="{% url 'achievements' %}">Achievements</a>
+            </li>
+            <li class="{% if 'notes' in request.get_full_path %}underline{% endif %}">
+                <a href="{% url 'notes' %}">Notes</a>
+            </li>
+            <li class="{% if 'story' in request.get_full_path %}underline{% endif %}">
+                <a href="{% url 'story' %}">Story</a>
+            </li>
+            <li class="{% if 'goals' in request.get_full_path %}underline{% endif %} ml-4 !mr-8">
+                <a href="{% url 'goals' %}">Goals</a>
+            </li>
+            <li class="!ml-auto {% if 'users' in request.get_full_path %}underline{% endif %}">
+                <a href="{% url 'form' 'ChangeEmail' %}">Settings</a>
+            </li>
+            <li>
+                <form action="{% url 'logout' %}" method="post">
+                    {% csrf_token %}
+                    <button type="submit">Logout</button>
+                </form>
+            </li>
+        </ul>
+    </nav>
+</div>

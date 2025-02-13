@@ -1,28 +1,30 @@
-<nav id="todos-nav" class="{% include 'nav.txt' %} bg-slate-600">
-    <ul class="">
-        <li>
-            <a class="{% if request.resolver_match.url_name == 'todos' and request.GET.kind is None or request.GET.kind == 'week' %}underline{% endif %}"
-               href="{% url 'todos' %}?kind=week">Week</a>
-        </li>
-        <li>
-            <a class="{% if request.GET.kind == 'next_week' %}underline{% endif %}"
-               href="{% url 'todos' %}?kind=next_week">Next Week</a>
-        </li>
-        <li>
-            <a class="{% if request.GET.kind == 'activated' %}underline{% endif %}"
-               href="{% url 'todos' %}?kind=activated">Activated</a>
-        </li>
-        <li>
-            <a class="{% if request.GET.kind == 'open' %}underline{% endif %}"
-               href="{% url 'todos' %}?kind=open">Open</a>
-        </li>
-        <li>
-            <a class="{% if request.GET.kind == 'all' %}underline{% endif %}"
-               href="{% url 'todos' %}?kind=all">All</a>
-        </li>
-        <li>
-            <a class="{% if 'Create' in request.get_full_path %}underline{% endif %}"
-               href="{% url 'form' 'CreateNormalTodo' %}?success={% url 'todos' %}&variant=this_week">Create Todo</a>
-        </li>
-    </ul>
-</nav>
+<div class="overflow-visible overflow-x-auto bg-slate-600">
+    <nav id="todos-nav" class="{% include 'nav.txt' %} ">
+        <ul class="">
+            <li>
+                <a class="{% if request.resolver_match.url_name == 'todos' and request.GET.kind is None or request.GET.kind == 'week' %}underline{% endif %}"
+                   href="{% url 'todos' %}?kind=week">Week</a>
+            </li>
+            <li>
+                <a class="{% if request.GET.kind == 'next_week' %}underline{% endif %}"
+                   href="{% url 'todos' %}?kind=next_week">Next Week</a>
+            </li>
+            <li>
+                <a class="{% if request.GET.kind == 'activated' %}underline{% endif %}"
+                   href="{% url 'todos' %}?kind=activated">Activated</a>
+            </li>
+            <li>
+                <a class="{% if request.GET.kind == 'open' %}underline{% endif %}"
+                   href="{% url 'todos' %}?kind=open">Open</a>
+            </li>
+            <li>
+                <a class="{% if request.GET.kind == 'all' %}underline{% endif %}"
+                   href="{% url 'todos' %}?kind=all">All</a>
+            </li>
+            <li>
+                <a class="{% if 'Create' in request.get_full_path %}underline{% endif %}"
+                   href="{% url 'form' 'CreateNormalTodo' %}?success={% url 'todos' %}&variant=this_week">Create Todo</a>
+            </li>
+        </ul>
+    </nav>
+</div>

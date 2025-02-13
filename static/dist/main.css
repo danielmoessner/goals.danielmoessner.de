@@ -1442,6 +1442,22 @@ b {
   margin-top: 1.5rem;
 }
 
+.mr-5 {
+  margin-right: 1.25rem;
+}
+
+.\!mr-5 {
+  margin-right: 1.25rem !important;
+}
+
+.ml-4 {
+  margin-left: 1rem;
+}
+
+.\!mr-8 {
+  margin-right: 2rem !important;
+}
+
 .block {
   display: block;
 }
@@ -1571,16 +1587,24 @@ b {
   border-color: rgb(243 244 246 / var(--tw-divide-opacity));
 }
 
+.overflow-visible {
+  overflow: visible;
+}
+
+.overflow-x-auto {
+  overflow-x: auto;
+}
+
 .rounded {
   border-radius: 0.25rem;
 }
 
-.rounded-none {
-  border-radius: 0px;
-}
-
 .rounded-md {
   border-radius: 0.375rem;
+}
+
+.rounded-none {
+  border-radius: 0px;
 }
 
 .rounded-b-sm {
@@ -1593,14 +1617,14 @@ b {
   border-bottom-left-radius: 0.25rem;
 }
 
-.rounded-r {
-  border-top-right-radius: 0.25rem;
-  border-bottom-right-radius: 0.25rem;
-}
-
 .rounded-l-none {
   border-top-left-radius: 0px;
   border-bottom-left-radius: 0px;
+}
+
+.rounded-r {
+  border-top-right-radius: 0.25rem;
+  border-bottom-right-radius: 0.25rem;
 }
 
 .rounded-r-none {
@@ -1620,17 +1644,21 @@ b {
   border-left-width: 1px;
 }
 
-.border-t {
-  border-top-width: 1px;
-}
-
 .border-l-0 {
   border-left-width: 0px;
+}
+
+.border-t {
+  border-top-width: 1px;
 }
 
 .border-black {
   --tw-border-opacity: 1;
   border-color: rgb(0 0 0 / var(--tw-border-opacity));
+}
+
+.border-form\/50 {
+  border-color: rgb(71 85 105 / 0.5);
 }
 
 .border-gray-200 {
@@ -1643,8 +1671,13 @@ b {
   border-color: rgb(100 116 139 / var(--tw-border-opacity));
 }
 
-.border-form\/50 {
-  border-color: rgb(71 85 105 / 0.5);
+.bg-form {
+  --tw-bg-opacity: 1;
+  background-color: rgb(71 85 105 / var(--tw-bg-opacity));
+}
+
+.bg-form\/10 {
+  background-color: rgb(71 85 105 / 0.1);
 }
 
 .bg-gray-100 {
@@ -1682,25 +1715,16 @@ b {
   background-color: rgb(255 255 255 / var(--tw-bg-opacity));
 }
 
-.bg-form {
-  --tw-bg-opacity: 1;
-  background-color: rgb(71 85 105 / var(--tw-bg-opacity));
-}
-
-.bg-form\/20 {
-  background-color: rgb(71 85 105 / 0.2);
-}
-
-.bg-form\/10 {
-  background-color: rgb(71 85 105 / 0.1);
-}
-
 .p-10 {
   padding: 2.5rem;
 }
 
 .p-5 {
   padding: 1.25rem;
+}
+
+.p-1 {
+  padding: 0.25rem;
 }
 
 .px-1 {
@@ -1825,6 +1849,11 @@ b {
   color: rgb(37 99 235 / var(--tw-text-opacity));
 }
 
+.text-form {
+  --tw-text-opacity: 1;
+  color: rgb(71 85 105 / var(--tw-text-opacity));
+}
+
 .text-gray-500 {
   --tw-text-opacity: 1;
   color: rgb(107 114 128 / var(--tw-text-opacity));
@@ -1855,19 +1884,14 @@ b {
   color: rgb(241 245 249 / var(--tw-text-opacity));
 }
 
-.text-white {
-  --tw-text-opacity: 1;
-  color: rgb(255 255 255 / var(--tw-text-opacity));
-}
-
-.text-form {
-  --tw-text-opacity: 1;
-  color: rgb(71 85 105 / var(--tw-text-opacity));
-}
-
 .text-slate-900 {
   --tw-text-opacity: 1;
   color: rgb(15 23 42 / var(--tw-text-opacity));
+}
+
+.text-white {
+  --tw-text-opacity: 1;
+  color: rgb(255 255 255 / var(--tw-text-opacity));
 }
 
 .underline {
@@ -1880,21 +1904,30 @@ b {
   box-shadow: var(--tw-ring-offset-shadow, 0 0 #0000), var(--tw-ring-shadow, 0 0 #0000), var(--tw-shadow);
 }
 
-.shadow-sm {
-  --tw-shadow: 0 1px 2px 0 rgb(0 0 0 / 0.05);
-  --tw-shadow-colored: 0 1px 2px 0 var(--tw-shadow-color);
-  box-shadow: var(--tw-ring-offset-shadow, 0 0 #0000), var(--tw-ring-shadow, 0 0 #0000), var(--tw-shadow);
-}
-
 .shadow-none {
   --tw-shadow: 0 0 #0000;
   --tw-shadow-colored: 0 0 #0000;
   box-shadow: var(--tw-ring-offset-shadow, 0 0 #0000), var(--tw-ring-shadow, 0 0 #0000), var(--tw-shadow);
 }
 
+.shadow-sm {
+  --tw-shadow: 0 1px 2px 0 rgb(0 0 0 / 0.05);
+  --tw-shadow-colored: 0 1px 2px 0 var(--tw-shadow-color);
+  box-shadow: var(--tw-ring-offset-shadow, 0 0 #0000), var(--tw-ring-shadow, 0 0 #0000), var(--tw-shadow);
+}
+
 .ring-form {
   --tw-ring-opacity: 1;
   --tw-ring-color: rgb(71 85 105 / var(--tw-ring-opacity));
+}
+
+.ring-gray-600 {
+  --tw-ring-opacity: 1;
+  --tw-ring-color: rgb(75 85 99 / var(--tw-ring-opacity));
+}
+
+.ring-offset-1 {
+  --tw-ring-offset-width: 1px;
 }
 
 .django-form {
@@ -2234,20 +2267,12 @@ a.disabled, button.disabled {
   opacity: 0.5;
 }
 
-.hover\:bg-form\/80:hover {
-  background-color: rgb(71 85 105 / 0.8);
-}
-
-.hover\:bg-form\/60:hover {
-  background-color: rgb(71 85 105 / 0.6);
-}
-
-.hover\:bg-form\/40:hover {
-  background-color: rgb(71 85 105 / 0.4);
-}
-
 .hover\:bg-form\/20:hover {
   background-color: rgb(71 85 105 / 0.2);
+}
+
+.hover\:bg-form\/80:hover {
+  background-color: rgb(71 85 105 / 0.8);
 }
 
 .focus\:z-10:focus {
@@ -2270,6 +2295,11 @@ a.disabled, button.disabled {
   box-shadow: var(--tw-ring-offset-shadow), var(--tw-ring-shadow), var(--tw-shadow, 0 0 #0000);
 }
 
+.focus-visible\:outline-none:focus-visible {
+  outline: 2px solid transparent;
+  outline-offset: 2px;
+}
+
 .focus-visible\:outline:focus-visible {
   outline-style: solid;
 }
@@ -2288,6 +2318,21 @@ a.disabled, button.disabled {
 
 .focus-visible\:outline-form\/20:focus-visible {
   outline-color: rgb(71 85 105 / 0.2);
+}
+
+.focus-visible\:ring:focus-visible {
+  --tw-ring-offset-shadow: var(--tw-ring-inset) 0 0 0 var(--tw-ring-offset-width) var(--tw-ring-offset-color);
+  --tw-ring-shadow: var(--tw-ring-inset) 0 0 0 calc(3px + var(--tw-ring-offset-width)) var(--tw-ring-color);
+  box-shadow: var(--tw-ring-offset-shadow), var(--tw-ring-shadow), var(--tw-shadow, 0 0 #0000);
+}
+
+.focus-visible\:ring-gray-600:focus-visible {
+  --tw-ring-opacity: 1;
+  --tw-ring-color: rgb(75 85 99 / var(--tw-ring-opacity));
+}
+
+.focus-visible\:ring-offset-1:focus-visible {
+  --tw-ring-offset-width: 1px;
 }
 
 @media (min-width: 640px) {
@@ -2340,6 +2385,11 @@ a.disabled, button.disabled {
   color: rgb(37 99 235 / var(--tw-text-opacity));
 }
 
+.\[\&_li\]\:focus-visible\:outline-none:focus-visible li {
+  outline: 2px solid transparent;
+  outline-offset: 2px;
+}
+
 .\[\&_li_a\]\:inline-block li a {
   display: inline-block;
 }
@@ -2374,8 +2424,53 @@ a.disabled, button.disabled {
   background-color: rgb(255 255 255 / 0.2);
 }
 
+.\[\&_li_a\]\:focus\:outline-none:focus li a {
+  outline: 2px solid transparent;
+  outline-offset: 2px;
+}
+
+.focus\:\[\&_li_a\]\:outline-none li a:focus {
+  outline: 2px solid transparent;
+  outline-offset: 2px;
+}
+
+.focus\:\[\&_li_a\]\:ring-2 li a:focus {
+  --tw-ring-offset-shadow: var(--tw-ring-inset) 0 0 0 var(--tw-ring-offset-width) var(--tw-ring-offset-color);
+  --tw-ring-shadow: var(--tw-ring-inset) 0 0 0 calc(2px + var(--tw-ring-offset-width)) var(--tw-ring-color);
+  box-shadow: var(--tw-ring-offset-shadow), var(--tw-ring-shadow), var(--tw-shadow, 0 0 #0000);
+}
+
+.focus\:\[\&_li_a\]\:ring-1 li a:focus {
+  --tw-ring-offset-shadow: var(--tw-ring-inset) 0 0 0 var(--tw-ring-offset-width) var(--tw-ring-offset-color);
+  --tw-ring-shadow: var(--tw-ring-inset) 0 0 0 calc(1px + var(--tw-ring-offset-width)) var(--tw-ring-color);
+  box-shadow: var(--tw-ring-offset-shadow), var(--tw-ring-shadow), var(--tw-shadow, 0 0 #0000);
+}
+
+.focus\:\[\&_li_a\]\:ring-gray-100 li a:focus {
+  --tw-ring-opacity: 1;
+  --tw-ring-color: rgb(243 244 246 / var(--tw-ring-opacity));
+}
+
+.focus\:\[\&_li_a\]\:ring-gray-100\/20 li a:focus {
+  --tw-ring-color: rgb(243 244 246 / 0.2);
+}
+
+.focus\:\[\&_li_a\]\:ring-offset-1 li a:focus {
+  --tw-ring-offset-width: 1px;
+}
+
 .focus-visible\:\[\&_li_a\]\:bg-white\/20 li a:focus-visible {
   background-color: rgb(255 255 255 / 0.2);
+}
+
+.\[\&_li_a\]\:focus-visible\:outline-none:focus-visible li a {
+  outline: 2px solid transparent;
+  outline-offset: 2px;
+}
+
+.focus-visible\:\[\&_li_a\]\:outline-none li a:focus-visible {
+  outline: 2px solid transparent;
+  outline-offset: 2px;
 }
 
 @media (min-width: 768px) {
@@ -2396,6 +2491,191 @@ a.disabled, button.disabled {
     padding-top: 0px;
     padding-bottom: 0px;
   }
+
+  .md\:\[\&_li_a\]\:px-2 li a {
+    padding-left: 0.5rem;
+    padding-right: 0.5rem;
+  }
+
+  .md\:\[\&_li_a\]\:px-1\.5 li a {
+    padding-left: 0.375rem;
+    padding-right: 0.375rem;
+  }
+
+  .focus\:md\:\[\&_li_a\]\:ring-1 li a:focus {
+    --tw-ring-offset-shadow: var(--tw-ring-inset) 0 0 0 var(--tw-ring-offset-width) var(--tw-ring-offset-color);
+    --tw-ring-shadow: var(--tw-ring-inset) 0 0 0 calc(1px + var(--tw-ring-offset-width)) var(--tw-ring-color);
+    box-shadow: var(--tw-ring-offset-shadow), var(--tw-ring-shadow), var(--tw-shadow, 0 0 #0000);
+  }
+
+  .focus\:md\:\[\&_li_a\]\:ring-gray-100\/20 li a:focus {
+    --tw-ring-color: rgb(243 244 246 / 0.2);
+  }
+
+  .focus\:md\:\[\&_li_a\]\:ring-offset-1 li a:focus {
+    --tw-ring-offset-width: 1px;
+  }
+}
+
+@media (min-width: 1024px) {
+  .lg\:focus\:\[\&_li_a\]\:ring-1 li a:focus {
+    --tw-ring-offset-shadow: var(--tw-ring-inset) 0 0 0 var(--tw-ring-offset-width) var(--tw-ring-offset-color);
+    --tw-ring-shadow: var(--tw-ring-inset) 0 0 0 calc(1px + var(--tw-ring-offset-width)) var(--tw-ring-color);
+    box-shadow: var(--tw-ring-offset-shadow), var(--tw-ring-shadow), var(--tw-shadow, 0 0 #0000);
+  }
+
+  .focus\:lg\:\[\&_li_a\]\:ring-1 li a:focus {
+    --tw-ring-offset-shadow: var(--tw-ring-inset) 0 0 0 var(--tw-ring-offset-width) var(--tw-ring-offset-color);
+    --tw-ring-shadow: var(--tw-ring-inset) 0 0 0 calc(1px + var(--tw-ring-offset-width)) var(--tw-ring-color);
+    box-shadow: var(--tw-ring-offset-shadow), var(--tw-ring-shadow), var(--tw-shadow, 0 0 #0000);
+  }
+
+  .lg\:focus\:\[\&_li_a\]\:ring-gray-100 li a:focus {
+    --tw-ring-opacity: 1;
+    --tw-ring-color: rgb(243 244 246 / var(--tw-ring-opacity));
+  }
+
+  .focus\:lg\:\[\&_li_a\]\:ring-gray-100 li a:focus {
+    --tw-ring-opacity: 1;
+    --tw-ring-color: rgb(243 244 246 / var(--tw-ring-opacity));
+  }
+
+  .focus\:lg\:\[\&_li_a\]\:ring-gray-100\/20 li a:focus {
+    --tw-ring-color: rgb(243 244 246 / 0.2);
+  }
+
+  .lg\:focus\:\[\&_li_a\]\:ring-offset-1 li a:focus {
+    --tw-ring-offset-width: 1px;
+  }
+
+  .focus\:lg\:\[\&_li_a\]\:ring-offset-1 li a:focus {
+    --tw-ring-offset-width: 1px;
+  }
+}
+
+.\[\&_li_button\]\:inline-block li button {
+  display: inline-block;
+}
+
+.\[\&_li_button\]\:whitespace-nowrap li button {
+  white-space: nowrap;
+}
+
+.\[\&_li_button\]\:rounded li button {
+  border-radius: 0.25rem;
+}
+
+.\[\&_li_button\]\:border-2 li button {
+  border-width: 2px;
+}
+
+.\[\&_li_button\]\:px-5 li button {
+  padding-left: 1.25rem;
+  padding-right: 1.25rem;
+}
+
+.\[\&_li_button\]\:py-0\.5 li button {
+  padding-top: 0.125rem;
+  padding-bottom: 0.125rem;
+}
+
+.hover\:\[\&_li_button\]\:bg-white\/20 li button:hover {
+  background-color: rgb(255 255 255 / 0.2);
+}
+
+.focus\:\[\&_li_button\]\:bg-white\/20 li button:focus {
+  background-color: rgb(255 255 255 / 0.2);
+}
+
+.focus\:\[\&_li_button\]\:outline-none li button:focus {
+  outline: 2px solid transparent;
+  outline-offset: 2px;
+}
+
+.focus\:\[\&_li_button\]\:ring-2 li button:focus {
+  --tw-ring-offset-shadow: var(--tw-ring-inset) 0 0 0 var(--tw-ring-offset-width) var(--tw-ring-offset-color);
+  --tw-ring-shadow: var(--tw-ring-inset) 0 0 0 calc(2px + var(--tw-ring-offset-width)) var(--tw-ring-color);
+  box-shadow: var(--tw-ring-offset-shadow), var(--tw-ring-shadow), var(--tw-shadow, 0 0 #0000);
+}
+
+.focus\:\[\&_li_button\]\:ring-1 li button:focus {
+  --tw-ring-offset-shadow: var(--tw-ring-inset) 0 0 0 var(--tw-ring-offset-width) var(--tw-ring-offset-color);
+  --tw-ring-shadow: var(--tw-ring-inset) 0 0 0 calc(1px + var(--tw-ring-offset-width)) var(--tw-ring-color);
+  box-shadow: var(--tw-ring-offset-shadow), var(--tw-ring-shadow), var(--tw-shadow, 0 0 #0000);
+}
+
+.focus\:\[\&_li_button\]\:ring-gray-100 li button:focus {
+  --tw-ring-opacity: 1;
+  --tw-ring-color: rgb(243 244 246 / var(--tw-ring-opacity));
+}
+
+.focus\:\[\&_li_button\]\:ring-offset-1 li button:focus {
+  --tw-ring-offset-width: 1px;
+}
+
+.focus-visible\:\[\&_li_button\]\:bg-white\/20 li button:focus-visible {
+  background-color: rgb(255 255 255 / 0.2);
+}
+
+.focus-visible\:\[\&_li_button\]\:outline-none li button:focus-visible {
+  outline: 2px solid transparent;
+  outline-offset: 2px;
+}
+
+@media (min-width: 768px) {
+  .md\:\[\&_li_button\]\:border-none li button {
+    border-style: none;
+  }
+
+  .md\:\[\&_li_button\]\:\!bg-transparent li button {
+    background-color: transparent !important;
+  }
+
+  .md\:\[\&_li_button\]\:px-0 li button {
+    padding-left: 0px;
+    padding-right: 0px;
+  }
+
+  .md\:\[\&_li_button\]\:py-0 li button {
+    padding-top: 0px;
+    padding-bottom: 0px;
+  }
+
+  .md\:\[\&_li_button\]\:px-1\.5 li button {
+    padding-left: 0.375rem;
+    padding-right: 0.375rem;
+  }
+
+  .focus\:md\:\[\&_li_button\]\:ring-1 li button:focus {
+    --tw-ring-offset-shadow: var(--tw-ring-inset) 0 0 0 var(--tw-ring-offset-width) var(--tw-ring-offset-color);
+    --tw-ring-shadow: var(--tw-ring-inset) 0 0 0 calc(1px + var(--tw-ring-offset-width)) var(--tw-ring-color);
+    box-shadow: var(--tw-ring-offset-shadow), var(--tw-ring-shadow), var(--tw-shadow, 0 0 #0000);
+  }
+
+  .focus\:md\:\[\&_li_button\]\:ring-gray-100\/20 li button:focus {
+    --tw-ring-color: rgb(243 244 246 / 0.2);
+  }
+
+  .focus\:md\:\[\&_li_button\]\:ring-offset-1 li button:focus {
+    --tw-ring-offset-width: 1px;
+  }
+}
+
+@media (min-width: 1024px) {
+  .lg\:focus\:\[\&_li_button\]\:ring-1 li button:focus {
+    --tw-ring-offset-shadow: var(--tw-ring-inset) 0 0 0 var(--tw-ring-offset-width) var(--tw-ring-offset-color);
+    --tw-ring-shadow: var(--tw-ring-inset) 0 0 0 calc(1px + var(--tw-ring-offset-width)) var(--tw-ring-color);
+    box-shadow: var(--tw-ring-offset-shadow), var(--tw-ring-shadow), var(--tw-shadow, 0 0 #0000);
+  }
+
+  .lg\:focus\:\[\&_li_button\]\:ring-gray-100 li button:focus {
+    --tw-ring-opacity: 1;
+    --tw-ring-color: rgb(243 244 246 / var(--tw-ring-opacity));
+  }
+
+  .lg\:focus\:\[\&_li_button\]\:ring-offset-1 li button:focus {
+    --tw-ring-offset-width: 1px;
+  }
 }
 
 .\[\&_ul\]\:flex ul {
@@ -2410,6 +2690,12 @@ a.disabled, button.disabled {
   --tw-space-x-reverse: 0;
   margin-right: calc(1rem * var(--tw-space-x-reverse));
   margin-left: calc(1rem * calc(1 - var(--tw-space-x-reverse)));
+}
+
+.\[\&_ul\]\:space-x-1 ul > :not([hidden]) ~ :not([hidden]) {
+  --tw-space-x-reverse: 0;
+  margin-right: calc(0.25rem * var(--tw-space-x-reverse));
+  margin-left: calc(0.25rem * calc(1 - var(--tw-space-x-reverse)));
 }
 
 .\[\&_ul\]\:overflow-visible ul {

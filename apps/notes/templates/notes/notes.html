@@ -5,8 +5,8 @@
     <ul class="p-5 space-y-2 list-disc list-inside">
         {% for n in notes %}
             <li class="flex relative items-center group [&_a]:text-blue-600">
-                <details>
-                    <summary>
+                <details class="w-full">
+                    <summary class="rounded focus-visible:ring focus-visible:ring-offset-1 focus-visible:ring-gray-600 focus-visible:outline-none">
                         <span class="inline-block text-sm font-bold">{{ n.name }}
                             <a class="ml-3"
                                href="{% url 'form' 'UpdateNote' %}?pk={{ n.pk }}&success={% url 'notes' %}">U</a>
@@ -15,7 +15,7 @@
                         </span>
                         <span class="block text-xs leading-none">{{ n.last_update_str }}</span>
                     </summary>
-                    <div class="mt-2">{{ n.content|safe }}</div>
+                    <div class="w-full p-1 mt-2 prose-sm prose border rounded max-w-none">{{ n.content|safe }}</div>
                 </details>
             </li>
         {% endfor %}
