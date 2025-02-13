@@ -166,6 +166,10 @@ def form_view(
     set_request(form, request)
     if request.method == "POST" and form.is_valid():
         ret = form.ok()
+        print(request.GET.dict())
+        stay_on_page = request.GET.get("stay_on_page", False)
+        if stay_on_page:
+            return redirect(request.get_full_path())
         success = getattr(form, "success", None)
         if success:
             return redirect(success)

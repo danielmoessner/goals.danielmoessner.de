@@ -8,6 +8,7 @@ from config.mixins import OptsUserInstance
 class CreateNote(OptsUserInstance[Note], forms.ModelForm):
     navs = ["notes"]
     submit = "Create"
+    stay_on_page = True
 
     class Meta:
         model = Note
@@ -21,6 +22,7 @@ class CreateNote(OptsUserInstance[Note], forms.ModelForm):
 
 class UpdateNote(OptsUserInstance[Note], forms.ModelForm):
     navs = ["notes"]
+    stay_on_page = True
 
     class Meta:
         model = Note

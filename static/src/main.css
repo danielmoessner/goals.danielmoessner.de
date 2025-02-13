@@ -12,11 +12,11 @@
     }
 
     .a {
-        @apply text-sky-700 underline;
+        @apply underline text-sky-700;
     }
 
     .action {
-        @apply text-blue-600 font-bold inline-block;
+        @apply inline-block font-bold text-blue-600;
     }
 }
 
@@ -63,9 +63,9 @@
     .helptext {
         @apply text-sm font-normal text-slate-500;
     }
-    button[type='submit'] {
+    /* button[type='submit'] {
         @apply px-2 py-1 mt-5 text-sm font-semibold text-white rounded shadow-sm bg-form hover:bg-form/80 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-form;
-    }
+    } */
 }
 
 /* .django-form--3-columns {
