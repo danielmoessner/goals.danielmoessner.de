@@ -1,5 +1,5 @@
 from datetime import timedelta
-from typing import TYPE_CHECKING
+from typing import TYPE_CHECKING, Optional
 
 from django.core.exceptions import ObjectDoesNotExist
 from django.db import models
@@ -172,33 +172,36 @@ class NormalTodo(Todo):
 class RepetitiveTodo(Todo):
     duration = models.DurationField()
     previous = models.OneToOneField(
-        "self", blank=True, null=True, on_delete=models.SET_NULL, related_name="next"
+        "self", blank=True, null=True, on_delete=models.SET_NULL, related_name="next"  # type: ignore
     )
-    repetitions = models.PositiveSmallIntegerField()
     blocked = models.BooleanField(default=False)
 
     if TYPE_CHECKING:
         next: "RepetitiveTodo"
+        previous: Optional["RepetitiveTodo"]
 
     def __str__(self):
-        return "{} {}".format(super().__str__(), self.repetitions)
+        return f"{self.name}"
 
-    def save(self, *args, **kwargs):
-        super(RepetitiveTodo, self).save(*args, **kwargs)
-        if self.repetitions > 0 and self.get_next() is None:
+    def complete(self):
+        super().complete()
+        if self.get_next() is None:
             self.generate_next()
+
+    def reset(self):
+        super().reset()
+        if (n := self.get_next()) is not None:
+            n.delete()
 
     def delete(self, using=None, keep_parents=False):
         next_rtd = self.get_next()
         if next_rtd and self.previous:
             next_rtd.previous = self.previous
             self.previous = None
-            self.repetitions = 0
             self.save()
             next_rtd.save()
         return super(RepetitiveTodo, self).delete(using, keep_parents)
 
-    # getters
     def get_next(self):
         try:
             next_rtd = self.next
@@ -214,12 +217,6 @@ class RepetitiveTodo(Todo):
                 repetitive_to_dos + next_repetitive_to_do.get_all_after()
             )
         return repetitive_to_dos
-        # this code may throw a parser stack overflow
-        # q = RepetitiveToDo.objects.filter(pk=self.pk)
-        # next_rtd = self.get_next()
-        # if next_rtd:
-        #     q = q | next_rtd.get_all_after()
-        # return q
 
     def get_all_before(self):
         q = RepetitiveTodo.objects.filter(pk=self.pk)
@@ -227,22 +224,18 @@ class RepetitiveTodo(Todo):
             q = q | self.previous.get_all_before()
         return q
 
-    # generate
     def generate_next(self):
-        if self.repetitions <= 0:
-            return
         assert self.deadline is not None
         assert self.activate is not None
-        next_deadline = self.deadline + self.duration
         next_activate = self.activate + self.duration
-        repetitions = self.repetitions - 1
+        next_deadline = self.deadline + self.duration
         RepetitiveTodo.objects.create(
             name=self.name,
             user=self.user,
             previous=self,
             deadline=next_deadline,
             activate=next_activate,
-            repetitions=repetitions,
+            repetitions=1,
             duration=self.duration,
         )
 

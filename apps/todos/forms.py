@@ -96,15 +96,15 @@ class CreateRepetitiveTodo(OptsUserInstance[RepetitiveTodo], forms.ModelForm):
 
     class Meta:
         model = RepetitiveTodo
-        fields = ["name", "duration", "repetitions"]
+        fields = ["name", "activate", "deadline", "duration"]
 
     def init(self):
         setup_duration_field(self.fields["duration"])
+        setup_datetime_field(self.fields["activate"])
+        setup_datetime_field(self.fields["deadline"])
 
     def ok(self):
         self.instance.user = self.user
-        self.instance.activate = timezone.now()
-        self.instance.deadline = timezone.now() + self.cleaned_data["duration"]
         self.instance.save()
         return self.instance.pk
 
@@ -133,7 +133,7 @@ class UpdateRepetitiveTodo(OptsUserInstance[RepetitiveTodo], forms.ModelForm):
 
     class Meta:
         model = RepetitiveTodo
-        fields = ["name", "status", "activate", "deadline", "repetitions"]
+        fields = ["name", "status", "activate", "deadline", "duration"]
 
     def get_instance(self):
         return RepetitiveTodo.objects.get(pk=self.opts["pk"], user=self.user)
