@@ -235,7 +235,6 @@ class RepetitiveTodo(Todo):
             previous=self,
             deadline=next_deadline,
             activate=next_activate,
-            repetitions=1,
             duration=self.duration,
         )
 
