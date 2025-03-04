@@ -3,7 +3,7 @@
         <li class="flex relative items-center group [&_a]:text-blue-600">
             <form class="flex mr-2"
                   method="post"
-                  action="{% url 'form' 'ToggleTodo' %}?pk={{ t.pk }}&success={% url 'todos' %}">
+                  action="{% url 'form' 'ToggleTodo' %}?pk={{ t.pk }}&success={{ request.get_full_path }}">
                 {% csrf_token %}
                 <input type="checkbox"
                        onChange="this.form.submit()"
