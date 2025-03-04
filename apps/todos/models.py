@@ -278,9 +278,27 @@ class NeverEndingTodo(Todo):
             return ""
         days = self.duration.days
         seconds = self.duration.seconds
-        return f"Reappears {days} days and {seconds} seconds after completion"
+        hours = seconds // 3600
+        minutes = (seconds % 3600) // 60
+        seconds = seconds % 60
 
-    # generate
+        parts = []
+        if days > 0:
+            parts.append(f"{days} day{'s' if days > 1 else ''}")
+        if hours > 0:
+            parts.append(f"{hours} hour{'s' if hours > 1 else ''}")
+        if minutes > 0:
+            parts.append(f"{minutes} minute{'s' if minutes > 1 else ''}")
+        if seconds > 0:
+            parts.append(f"{seconds} second{'s' if seconds > 1 else ''}")
+
+        if len(parts) == 0:
+            return "Reappears"
+        elif len(parts) == 1:
+            return "Reappears " + parts[0] + " after completion"
+        else:
+            return "Reappears " + ", ".join(parts[:-1]) + " and " + parts[-1] + " after completion"
+
     def generate_next(self):
         now = timezone.now()
         next_activate = now + self.duration
