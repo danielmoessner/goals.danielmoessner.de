@@ -6,3 +6,4 @@ tmp/**/*
 node_modules
 .codegpt
 .ruff_cache
+tailwindcss
