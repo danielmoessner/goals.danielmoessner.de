@@ -3,15 +3,17 @@ px-3 py-2 md:py-1 rounded-tsm text-slate-100
 [&_ul]:flex [&_ul]:max-w-full [&_ul]:space-x-1 
 
 [&_li_a]:whitespace-nowrap md:[&_li_a]:px-1.5 md:[&_li_a]:py-0 [&_li_a]:px-5 [&_li_a]:py-0.5 [&_li_a]:inline-block [&_li_a]:rounded [&_li_a]:border-2 
-hover:[&_li_a]:bg-white/20 
-focus:[&_li_a]:bg-white/20 focus:[&_li_a]:outline-none
-focus-visible:[&_li_a]:bg-white/20 focus-visible:[&_li_a]:outline-none  
+[&_li_a]:hover:bg-white/20 
+[&_li_a]:focus:bg-white/20 [&_li_a]:focus:outline-none
+[&_li_a]:focus-visible:bg-white/20 [&_li_a]:focus-visible:outline-none  
 md:[&_li_a]:border-none md:[&_li_a]:!bg-transparent 
-focus:md:[&_li_a]:ring-1 focus:md:[&_li_a]:ring-offset-1 focus:md:[&_li_a]:ring-gray-100/20
+md:[&_li_a]:focus:ring-1 md:[&_li_a]:ring-slate-100 md:[&_li_a]:focus-visible:outline-none md:[&_li_a]:focus:ring-offset-1 md:[&_li_a]:focus:ring-gray-100/20
+md:[&_li_a]:hover:ring-1
 
 [&_li_button]:whitespace-nowrap md:[&_li_button]:px-1.5 md:[&_li_button]:py-0 [&_li_button]:px-5 [&_li_button]:py-0.5 [&_li_button]:inline-block [&_li_button]:rounded [&_li_button]:border-2 
-hover:[&_li_button]:bg-white/20 
-focus:[&_li_button]:bg-white/20 focus:[&_li_button]:outline-none
-focus-visible:[&_li_button]:bg-white/20 focus-visible:[&_li_button]:outline-none  
+[&_li_button]:hover:bg-white/20 
+[&_li_button]:focus:bg-white/20 [&_li_button]:focus:outline-none
+[&_li_button]:focus-visible:bg-white/20 [&_li_button]:focus-visible:outline-none  
 md:[&_li_button]:border-none md:[&_li_button]:!bg-transparent 
-focus:md:[&_li_button]:ring-1 focus:md:[&_li_button]:ring-offset-1 focus:md:[&_li_button]:ring-gray-100/20
+md:[&_li_button]:focus:ring-1 md:[&_li_button]:ring-slate-100 md:[&_li_button]:focus-visible:outline-none md:[&_li_button]:focus:ring-offset-1 md:[&_li_button]:focus:ring-gray-100/20
+md:[&_li_button]:hover:ring-1

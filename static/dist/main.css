@@ -269,9 +269,6 @@
   .ml-3 {
     margin-left: calc(var(--spacing) * 3);
   }
-  .ml-4 {
-    margin-left: calc(var(--spacing) * 4);
-  }
   .ml-5 {
     margin-left: calc(var(--spacing) * 5);
   }
@@ -473,6 +470,9 @@
   .bg-gray-100 {
     background-color: var(--color-gray-100);
   }
+  .bg-red-500 {
+    background-color: var(--color-red-500);
+  }
   .bg-slate-200 {
     background-color: var(--color-slate-200);
   }
@@ -668,6 +668,11 @@
       box-shadow: var(--tw-inset-shadow), var(--tw-inset-ring-shadow), var(--tw-ring-offset-shadow), var(--tw-ring-shadow), var(--tw-shadow);
     }
   }
+  .focus\:ring-slate-100 {
+    &:focus {
+      --tw-ring-color: var(--color-slate-100);
+    }
+  }
   .focus\:outline-none {
     &:focus {
       --tw-outline-style: none;
@@ -777,6 +782,16 @@
       color: var(--color-blue-600);
     }
   }
+  .\[\&_hover\:li_a\]\:bg-white\/20 {
+    & hover:li a {
+      background-color: color-mix(in oklab, var(--color-white) 20%, transparent);
+    }
+  }
+  .\[\&_hover\:li_button\]\:bg-white\/20 {
+    & hover:li button {
+      background-color: color-mix(in oklab, var(--color-white) 20%, transparent);
+    }
+  }
   .\[\&_li_a\]\:inline-block {
     & li a {
       display: inline-block;
@@ -808,6 +823,15 @@
       white-space: nowrap;
     }
   }
+  .\[\&_li_a\]\:hover\:bg-white\/20 {
+    & li a {
+      &:hover {
+        @media (hover: hover) {
+          background-color: color-mix(in oklab, var(--color-white) 20%, transparent);
+        }
+      }
+    }
+  }
   .hover\:\[\&_li_a\]\:bg-white\/20 {
     &:hover {
       @media (hover: hover) {
@@ -817,10 +841,25 @@
       }
     }
   }
+  .\[\&_li_a\]\:focus\:bg-white\/20 {
+    & li a {
+      &:focus {
+        background-color: color-mix(in oklab, var(--color-white) 20%, transparent);
+      }
+    }
+  }
   .focus\:\[\&_li_a\]\:bg-white\/20 {
     &:focus {
       & li a {
         background-color: color-mix(in oklab, var(--color-white) 20%, transparent);
+      }
+    }
+  }
+  .\[\&_li_a\]\:focus\:outline-none {
+    & li a {
+      &:focus {
+        --tw-outline-style: none;
+        outline-style: none;
       }
     }
   }
@@ -832,10 +871,25 @@
       }
     }
   }
+  .\[\&_li_a\]\:focus-visible\:bg-white\/20 {
+    & li a {
+      &:focus-visible {
+        background-color: color-mix(in oklab, var(--color-white) 20%, transparent);
+      }
+    }
+  }
   .focus-visible\:\[\&_li_a\]\:bg-white\/20 {
     &:focus-visible {
       & li a {
         background-color: color-mix(in oklab, var(--color-white) 20%, transparent);
+      }
+    }
+  }
+  .\[\&_li_a\]\:focus-visible\:outline-none {
+    & li a {
+      &:focus-visible {
+        --tw-outline-style: none;
+        outline-style: none;
       }
     }
   }
@@ -876,10 +930,39 @@
       }
     }
   }
+  .md\:\[\&_li_a\]\:ring-slate-100 {
+    @media (width >= 48rem) {
+      & li a {
+        --tw-ring-color: var(--color-slate-100);
+      }
+    }
+  }
+  .md\:\[\&_li_a\]\:hover\:ring-1 {
+    @media (width >= 48rem) {
+      & li a {
+        &:hover {
+          @media (hover: hover) {
+            --tw-ring-shadow: var(--tw-ring-inset,) 0 0 0 calc(1px + var(--tw-ring-offset-width)) var(--tw-ring-color, currentColor);
+            box-shadow: var(--tw-inset-shadow), var(--tw-inset-ring-shadow), var(--tw-ring-offset-shadow), var(--tw-ring-shadow), var(--tw-shadow);
+          }
+        }
+      }
+    }
+  }
   .focus\:md\:\[\&_li_a\]\:ring-1 {
     &:focus {
       @media (width >= 48rem) {
         & li a {
+          --tw-ring-shadow: var(--tw-ring-inset,) 0 0 0 calc(1px + var(--tw-ring-offset-width)) var(--tw-ring-color, currentColor);
+          box-shadow: var(--tw-inset-shadow), var(--tw-inset-ring-shadow), var(--tw-ring-offset-shadow), var(--tw-ring-shadow), var(--tw-shadow);
+        }
+      }
+    }
+  }
+  .md\:\[\&_li_a\]\:focus\:ring-1 {
+    @media (width >= 48rem) {
+      & li a {
+        &:focus {
           --tw-ring-shadow: var(--tw-ring-inset,) 0 0 0 calc(1px + var(--tw-ring-offset-width)) var(--tw-ring-color, currentColor);
           box-shadow: var(--tw-inset-shadow), var(--tw-inset-ring-shadow), var(--tw-ring-offset-shadow), var(--tw-ring-shadow), var(--tw-shadow);
         }
@@ -895,12 +978,79 @@
       }
     }
   }
+  .md\:\[\&_li_a\]\:focus\:ring-gray-100\/20 {
+    @media (width >= 48rem) {
+      & li a {
+        &:focus {
+          --tw-ring-color: color-mix(in oklab, var(--color-gray-100) 20%, transparent);
+        }
+      }
+    }
+  }
+  .md\:\[\&_li_a\]\:focus\:ring-slate-100 {
+    @media (width >= 48rem) {
+      & li a {
+        &:focus {
+          --tw-ring-color: var(--color-slate-100);
+        }
+      }
+    }
+  }
   .focus\:md\:\[\&_li_a\]\:ring-offset-1 {
     &:focus {
       @media (width >= 48rem) {
         & li a {
           --tw-ring-offset-width: 1px;
           --tw-ring-offset-shadow: var(--tw-ring-inset,) 0 0 0 var(--tw-ring-offset-width) var(--tw-ring-offset-color);
+        }
+      }
+    }
+  }
+  .md\:\[\&_li_a\]\:focus\:ring-offset-1 {
+    @media (width >= 48rem) {
+      & li a {
+        &:focus {
+          --tw-ring-offset-width: 1px;
+          --tw-ring-offset-shadow: var(--tw-ring-inset,) 0 0 0 var(--tw-ring-offset-width) var(--tw-ring-offset-color);
+        }
+      }
+    }
+  }
+  .md\:\[\&_li_a\]\:focus\:outline-none {
+    @media (width >= 48rem) {
+      & li a {
+        &:focus {
+          --tw-outline-style: none;
+          outline-style: none;
+        }
+      }
+    }
+  }
+  .md\:\[\&_li_a\]\:focus-visible\:ring-1 {
+    @media (width >= 48rem) {
+      & li a {
+        &:focus-visible {
+          --tw-ring-shadow: var(--tw-ring-inset,) 0 0 0 calc(1px + var(--tw-ring-offset-width)) var(--tw-ring-color, currentColor);
+          box-shadow: var(--tw-inset-shadow), var(--tw-inset-ring-shadow), var(--tw-ring-offset-shadow), var(--tw-ring-shadow), var(--tw-shadow);
+        }
+      }
+    }
+  }
+  .md\:\[\&_li_a\]\:focus-visible\:ring-slate-100 {
+    @media (width >= 48rem) {
+      & li a {
+        &:focus-visible {
+          --tw-ring-color: var(--color-slate-100);
+        }
+      }
+    }
+  }
+  .md\:\[\&_li_a\]\:focus-visible\:outline-none {
+    @media (width >= 48rem) {
+      & li a {
+        &:focus-visible {
+          --tw-outline-style: none;
+          outline-style: none;
         }
       }
     }
@@ -936,6 +1086,15 @@
       white-space: nowrap;
     }
   }
+  .\[\&_li_button\]\:hover\:bg-white\/20 {
+    & li button {
+      &:hover {
+        @media (hover: hover) {
+          background-color: color-mix(in oklab, var(--color-white) 20%, transparent);
+        }
+      }
+    }
+  }
   .hover\:\[\&_li_button\]\:bg-white\/20 {
     &:hover {
       @media (hover: hover) {
@@ -945,10 +1104,25 @@
       }
     }
   }
+  .\[\&_li_button\]\:focus\:bg-white\/20 {
+    & li button {
+      &:focus {
+        background-color: color-mix(in oklab, var(--color-white) 20%, transparent);
+      }
+    }
+  }
   .focus\:\[\&_li_button\]\:bg-white\/20 {
     &:focus {
       & li button {
         background-color: color-mix(in oklab, var(--color-white) 20%, transparent);
+      }
+    }
+  }
+  .\[\&_li_button\]\:focus\:outline-none {
+    & li button {
+      &:focus {
+        --tw-outline-style: none;
+        outline-style: none;
       }
     }
   }
@@ -960,10 +1134,25 @@
       }
     }
   }
+  .\[\&_li_button\]\:focus-visible\:bg-white\/20 {
+    & li button {
+      &:focus-visible {
+        background-color: color-mix(in oklab, var(--color-white) 20%, transparent);
+      }
+    }
+  }
   .focus-visible\:\[\&_li_button\]\:bg-white\/20 {
     &:focus-visible {
       & li button {
         background-color: color-mix(in oklab, var(--color-white) 20%, transparent);
+      }
+    }
+  }
+  .\[\&_li_button\]\:focus-visible\:outline-none {
+    & li button {
+      &:focus-visible {
+        --tw-outline-style: none;
+        outline-style: none;
       }
     }
   }
@@ -1004,10 +1193,39 @@
       }
     }
   }
+  .md\:\[\&_li_button\]\:ring-slate-100 {
+    @media (width >= 48rem) {
+      & li button {
+        --tw-ring-color: var(--color-slate-100);
+      }
+    }
+  }
+  .md\:\[\&_li_button\]\:hover\:ring-1 {
+    @media (width >= 48rem) {
+      & li button {
+        &:hover {
+          @media (hover: hover) {
+            --tw-ring-shadow: var(--tw-ring-inset,) 0 0 0 calc(1px + var(--tw-ring-offset-width)) var(--tw-ring-color, currentColor);
+            box-shadow: var(--tw-inset-shadow), var(--tw-inset-ring-shadow), var(--tw-ring-offset-shadow), var(--tw-ring-shadow), var(--tw-shadow);
+          }
+        }
+      }
+    }
+  }
   .focus\:md\:\[\&_li_button\]\:ring-1 {
     &:focus {
       @media (width >= 48rem) {
         & li button {
+          --tw-ring-shadow: var(--tw-ring-inset,) 0 0 0 calc(1px + var(--tw-ring-offset-width)) var(--tw-ring-color, currentColor);
+          box-shadow: var(--tw-inset-shadow), var(--tw-inset-ring-shadow), var(--tw-ring-offset-shadow), var(--tw-ring-shadow), var(--tw-shadow);
+        }
+      }
+    }
+  }
+  .md\:\[\&_li_button\]\:focus\:ring-1 {
+    @media (width >= 48rem) {
+      & li button {
+        &:focus {
           --tw-ring-shadow: var(--tw-ring-inset,) 0 0 0 calc(1px + var(--tw-ring-offset-width)) var(--tw-ring-color, currentColor);
           box-shadow: var(--tw-inset-shadow), var(--tw-inset-ring-shadow), var(--tw-ring-offset-shadow), var(--tw-ring-shadow), var(--tw-shadow);
         }
@@ -1023,12 +1241,41 @@
       }
     }
   }
+  .md\:\[\&_li_button\]\:focus\:ring-gray-100\/20 {
+    @media (width >= 48rem) {
+      & li button {
+        &:focus {
+          --tw-ring-color: color-mix(in oklab, var(--color-gray-100) 20%, transparent);
+        }
+      }
+    }
+  }
   .focus\:md\:\[\&_li_button\]\:ring-offset-1 {
     &:focus {
       @media (width >= 48rem) {
         & li button {
           --tw-ring-offset-width: 1px;
           --tw-ring-offset-shadow: var(--tw-ring-inset,) 0 0 0 var(--tw-ring-offset-width) var(--tw-ring-offset-color);
+        }
+      }
+    }
+  }
+  .md\:\[\&_li_button\]\:focus\:ring-offset-1 {
+    @media (width >= 48rem) {
+      & li button {
+        &:focus {
+          --tw-ring-offset-width: 1px;
+          --tw-ring-offset-shadow: var(--tw-ring-inset,) 0 0 0 var(--tw-ring-offset-width) var(--tw-ring-offset-color);
+        }
+      }
+    }
+  }
+  .md\:\[\&_li_button\]\:focus-visible\:outline-none {
+    @media (width >= 48rem) {
+      & li button {
+        &:focus-visible {
+          --tw-outline-style: none;
+          outline-style: none;
         }
       }
     }
@@ -1049,6 +1296,17 @@
         --tw-space-x-reverse: 0;
         margin-inline-start: calc(calc(var(--spacing) * 1) * var(--tw-space-x-reverse));
         margin-inline-end: calc(calc(var(--spacing) * 1) * calc(1 - var(--tw-space-x-reverse)));
+      }
+    }
+  }
+  .\[\&_li\]\:hover\:\[a\]\:bg-white\/20 {
+    & li {
+      &:hover {
+        @media (hover: hover) {
+          &:is(a) {
+            background-color: color-mix(in oklab, var(--color-white) 20%, transparent);
+          }
+        }
       }
     }
   }
