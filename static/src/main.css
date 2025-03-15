@@ -1,6 +1,8 @@
-@import "tailwindcss/base";
-@import "tailwindcss/components";
-@import "tailwindcss/utilities";
+@import "tailwindcss";
+
+@theme {
+    --color-form: #475569;
+}
 
 @layer base {
     body {
@@ -17,6 +19,14 @@
 
     .action {
         @apply inline-block font-bold text-blue-600;
+    }
+    
+    [class*="border"] {
+        @apply border-slate-200;
+    }
+
+    hr {
+        @apply border-slate-200;
     }
 }
 
