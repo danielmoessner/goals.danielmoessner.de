@@ -931,6 +931,9 @@
   .max-w-none {
     max-width: none;
   }
+  .cursor-pointer {
+    cursor: pointer;
+  }
   .list-inside {
     list-style-position: inside;
   }
