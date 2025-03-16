@@ -7,6 +7,6 @@
     <p class="">{{ form.text }}</p>
     {% include 'btn/submit.html' with text=form.submit|default:'Submit' class="mt-5" %}
     {% if form.stay_on_page %}
-        {% include 'btn/secondary_submit.html' with text=form.secondary_submit|default:'Submit & Keep Editing' class="mt-5" attrs='formaction="'|add:request.get_full_path|add:'&stay_on_page=1"' %}
+        {% include 'btn/secondary_submit.html' with text=form.stay_on_page.submit class="mt-5" attrs='formaction="'|add:request.get_full_path|add:'"' %}
     {% endif %}
 </form>

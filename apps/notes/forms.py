@@ -9,7 +9,6 @@ from config.mixins import OptsUserInstance
 class CreateNote(FormClass, OptsUserInstance[Note], forms.ModelForm):
     addons = {
         "navs": ["notes"],
-        "stay_on_page": {"submit": "Create & Keep Editing"},
     }
     submit = "Create"
 
