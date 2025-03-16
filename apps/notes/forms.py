@@ -2,13 +2,16 @@ from django import forms
 from tinymce.widgets import TinyMCE
 
 from apps.notes.models import Note
+from config.form_class import FormClass
 from config.mixins import OptsUserInstance
 
 
-class CreateNote(OptsUserInstance[Note], forms.ModelForm):
-    navs = ["notes"]
+class CreateNote(FormClass, OptsUserInstance[Note], forms.ModelForm):
+    addons = {
+        "navs": ["notes"],
+        "stay_on_page": {"submit": "Create & Keep Editing"},
+    }
     submit = "Create"
-    stay_on_page = True
 
     class Meta:
         model = Note
@@ -20,9 +23,11 @@ class CreateNote(OptsUserInstance[Note], forms.ModelForm):
         return self.instance.pk
 
 
-class UpdateNote(OptsUserInstance[Note], forms.ModelForm):
-    navs = ["notes"]
-    stay_on_page = True
+class UpdateNote(FormClass, OptsUserInstance[Note], forms.ModelForm):
+    addons = {
+        "navs": ["notes"],
+        "stay_on_page": {"submit": "Save & Keep Editing"},
+    }
 
     class Meta:
         model = Note
@@ -36,8 +41,8 @@ class UpdateNote(OptsUserInstance[Note], forms.ModelForm):
         return self.instance.pk
 
 
-class DeleteNote(OptsUserInstance[Note], forms.ModelForm):
-    navs = ["notes"]
+class DeleteNote(FormClass, OptsUserInstance[Note], forms.ModelForm):
+    addons = {"navs": ["notes"]}
     text = "Are you sure you want to delete this note?"
     submit = "Delete"
 

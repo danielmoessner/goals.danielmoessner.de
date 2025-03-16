@@ -1,11 +1,12 @@
 from django import forms
 
 from apps.story.models import Story
+from config.form_class import FormClass
 from config.mixins import OptsUserInstance
 
 
-class UpdateStory(OptsUserInstance[Story], forms.ModelForm):
-    navs = ["story"]
+class UpdateStory(FormClass, OptsUserInstance[Story], forms.ModelForm):
+    addons = {"navs": ["story"]}
 
     class Meta:
         model = Story

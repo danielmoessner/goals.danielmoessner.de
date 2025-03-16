@@ -19,10 +19,11 @@ from django.utils.encoding import force_bytes
 
 from apps.users.generators import ChangeEmailTokenGenerator, ConfirmEmailTokenGenerator
 from apps.users.models import CustomUser
+from config.form_class import FormClass
 from config.mixins import OptsUser, OptsUserInstance
 
 
-class Login(OptsUser, AuthenticationForm):
+class Login(FormClass, OptsUser, AuthenticationForm):
     title = "Login"
     submit = "Login"
     bottom = "users/login.html"
@@ -39,9 +40,9 @@ class Login(OptsUser, AuthenticationForm):
         return self.get_user().pk
 
 
-class ChangePassword(PasswordChangeForm):
+class ChangePassword(FormClass, PasswordChangeForm):
+    addons = {"navs": ["settings"]}
     submit = "Change"
-    navs = ["settings"]
     success = reverse_lazy("change_password_done")
 
     def __init__(self, user, opts, *args, **kwargs):
@@ -68,10 +69,10 @@ class ChangePassword(PasswordChangeForm):
         return user.pk
 
 
-class ChangeEmail(OptsUserInstance[CustomUser], forms.ModelForm):
+class ChangeEmail(FormClass, OptsUserInstance[CustomUser], forms.ModelForm):
+    addons = {"navs": ["settings"]}
     title = "Change E-Mail"
     success = reverse_lazy("change_email_done")
-    navs = ["settings"]
 
     class Meta:
         model = CustomUser
@@ -121,7 +122,7 @@ class ChangeEmail(OptsUserInstance[CustomUser], forms.ModelForm):
         return user.pk
 
 
-class Register(OptsUser, UserCreationForm):
+class Register(FormClass, OptsUser, UserCreationForm):
     submit = "Register"
     title = "Register"
     bottom = "users/register_user_1.html"
@@ -172,7 +173,7 @@ class Register(OptsUser, UserCreationForm):
         return user.pk
 
 
-class ResetPassword(OptsUser, PasswordResetForm):
+class ResetPassword(FormClass, OptsUser, PasswordResetForm):
     title = "Reset Password"
     text = "Please type in your email and we will send a password reset email."
     success = reverse_lazy("password_reset_done")
@@ -185,6 +186,6 @@ class ResetPassword(OptsUser, PasswordResetForm):
         return 0
 
 
-class SetPassword(SetPasswordForm):
+class SetPassword(FormClass, SetPasswordForm):
     title = "Set Password"
     success = reverse_lazy("password_reset_complete")

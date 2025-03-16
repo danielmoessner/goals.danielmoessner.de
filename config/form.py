@@ -43,9 +43,12 @@ from apps.users.forms import ChangeEmail, ChangePassword, Login, Register, Reset
 from apps.users.models import CustomUser
 from apps.utils.functional import list_map
 from config.errors import GetFormError, InvalidUserError
+from config.form_addons import Addons
 
 
 class FormClass(Protocol):
+    addons: Addons
+
     def __init__(
         self,
         user: CustomUser | AbstractBaseUser | AnonymousUser,
@@ -57,6 +60,8 @@ class FormClass(Protocol):
     def ok(self) -> int: ...
 
     def is_valid(self) -> bool: ...
+
+    def _has_addon(self, key: str) -> bool: ...
 
 
 # improve to import automatically
@@ -126,7 +131,7 @@ def get_form_class(form_name: str | None) -> type[FormClass]:
 
 
 def get_navs(form: FormClass) -> list[str]:
-    return list_map(getattr(form, "navs", []), lambda n: NAVS.get(n, ""))
+    return list_map(form.addons.get("navs", []), lambda n: NAVS.get(n, ""))
 
 
 def set_request(form: FormClass, request: HttpRequest) -> None:
@@ -166,9 +171,7 @@ def form_view(
     set_request(form, request)
     if request.method == "POST" and form.is_valid():
         ret = form.ok()
-        print(request.GET.dict())
-        stay_on_page = request.GET.get("stay_on_page", False)
-        if stay_on_page:
+        if form._has_addon("stay_on_page"):
             return redirect(request.get_full_path())
         success = getattr(form, "success", None)
         if success:

@@ -297,7 +297,13 @@ class NeverEndingTodo(Todo):
         elif len(parts) == 1:
             return "Reappears " + parts[0] + " after completion"
         else:
-            return "Reappears " + ", ".join(parts[:-1]) + " and " + parts[-1] + " after completion"
+            return (
+                "Reappears "
+                + ", ".join(parts[:-1])
+                + " and "
+                + parts[-1]
+                + " after completion"
+            )
 
     def generate_next(self):
         now = timezone.now()

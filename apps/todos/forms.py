@@ -24,6 +24,7 @@ from apps.todos.utils import (
     setup_duration_field,
 )
 from apps.users.models import CustomUser
+from config.form_class import FormClass
 from config.mixins import OptsUserInstance
 
 USER = AbstractBaseUser | AnonymousUser | CustomUser
@@ -31,7 +32,8 @@ OPTS = dict[str, Any]
 T = TypeVar("T", bound=models.Model)
 
 
-class CreateTodoFast(OptsUserInstance[Todo], forms.ModelForm):
+class CreateTodoFast(FormClass, OptsUserInstance[Todo], forms.ModelForm):
+
     class Meta:
         model = NormalTodo
         fields = ["name"]
@@ -47,8 +49,8 @@ class CreateTodoFast(OptsUserInstance[Todo], forms.ModelForm):
         return self.instance.pk
 
 
-class CreateNormalTodo(OptsUserInstance[NormalTodo], forms.ModelForm):
-    navs = ["todos", "create"]
+class CreateNormalTodo(FormClass, OptsUserInstance[NormalTodo], forms.ModelForm):
+    addons = {"navs": ["todos", "create"]}
 
     class Meta:
         model = NormalTodo
@@ -71,8 +73,10 @@ class CreateNormalTodo(OptsUserInstance[NormalTodo], forms.ModelForm):
         return self.instance.pk
 
 
-class CreateNeverEndingTodo(OptsUserInstance[NeverEndingTodo], forms.ModelForm):
-    navs = ["todos", "create"]
+class CreateNeverEndingTodo(
+    FormClass, OptsUserInstance[NeverEndingTodo], forms.ModelForm
+):
+    addons = {"navs": ["todos", "create"]}
     text = "A never ending todo will reappear after the completion date + the duration time."
     submit = "Create"
 
@@ -90,8 +94,10 @@ class CreateNeverEndingTodo(OptsUserInstance[NeverEndingTodo], forms.ModelForm):
         return self.instance.pk
 
 
-class CreateRepetitiveTodo(OptsUserInstance[RepetitiveTodo], forms.ModelForm):
-    navs = ["todos", "create"]
+class CreateRepetitiveTodo(
+    FormClass, OptsUserInstance[RepetitiveTodo], forms.ModelForm
+):
+    addons = {"navs": ["todos", "create"]}
     submit = "Create"
 
     class Meta:
@@ -109,8 +115,8 @@ class CreateRepetitiveTodo(OptsUserInstance[RepetitiveTodo], forms.ModelForm):
         return self.instance.pk
 
 
-class CreatePipelineTodo(OptsUserInstance[PipelineTodo], forms.ModelForm):
-    navs = ["todos", "create"]
+class CreatePipelineTodo(FormClass, OptsUserInstance[PipelineTodo], forms.ModelForm):
+    addons = {"navs": ["todos", "create"]}
     submit = "Create"
     text = "A pipeline todo activates once its previous todo completes"
 
@@ -128,8 +134,10 @@ class CreatePipelineTodo(OptsUserInstance[PipelineTodo], forms.ModelForm):
         return self.instance.pk
 
 
-class UpdateRepetitiveTodo(OptsUserInstance[RepetitiveTodo], forms.ModelForm):
-    navs = ["todos"]
+class UpdateRepetitiveTodo(
+    FormClass, OptsUserInstance[RepetitiveTodo], forms.ModelForm
+):
+    addons = {"navs": ["todos"]}
 
     class Meta:
         model = RepetitiveTodo
@@ -147,8 +155,8 @@ class UpdateRepetitiveTodo(OptsUserInstance[RepetitiveTodo], forms.ModelForm):
         return self.instance.pk
 
 
-class UpdateNormalTodo(OptsUserInstance[NormalTodo], forms.ModelForm):
-    navs = ["todos"]
+class UpdateNormalTodo(FormClass, OptsUserInstance[NormalTodo], forms.ModelForm):
+    addons = {"navs": ["todos"]}
 
     class Meta:
         model = NormalTodo
@@ -166,8 +174,10 @@ class UpdateNormalTodo(OptsUserInstance[NormalTodo], forms.ModelForm):
         return self.instance.pk
 
 
-class UpdateNeverEndingTodo(OptsUserInstance[NeverEndingTodo], forms.ModelForm):
-    navs = ["todos"]
+class UpdateNeverEndingTodo(
+    FormClass, OptsUserInstance[NeverEndingTodo], forms.ModelForm
+):
+    addons = {"navs": ["todos"]}
 
     class Meta:
         model = NeverEndingTodo
@@ -184,8 +194,8 @@ class UpdateNeverEndingTodo(OptsUserInstance[NeverEndingTodo], forms.ModelForm):
         return self.instance.pk
 
 
-class CreateNotesTodo(OptsUserInstance[NotesTodo], forms.ModelForm):
-    navs = ["todos", "create"]
+class CreateNotesTodo(FormClass, OptsUserInstance[NotesTodo], forms.ModelForm):
+    addons = {"navs": ["todos", "create"]}
 
     class Meta:
         model = NotesTodo
@@ -198,8 +208,8 @@ class CreateNotesTodo(OptsUserInstance[NotesTodo], forms.ModelForm):
         return self.instance.pk
 
 
-class UpdateNotesTodo(OptsUserInstance[NotesTodo], forms.ModelForm):
-    navs = ["todos"]
+class UpdateNotesTodo(FormClass, OptsUserInstance[NotesTodo], forms.ModelForm):
+    addons = {"navs": ["todos"]}
 
     class Meta:
         model = NotesTodo
@@ -213,8 +223,8 @@ class UpdateNotesTodo(OptsUserInstance[NotesTodo], forms.ModelForm):
         return self.instance.pk
 
 
-class DeleteTodo(OptsUserInstance[NormalTodo], forms.ModelForm):
-    navs = ["todos"]
+class DeleteTodo(FormClass, OptsUserInstance[NormalTodo], forms.ModelForm):
+    addons = {"navs": ["todos"]}
     text = "Are you sure you want to delete this todo?"
     submit = "Delete"
 
@@ -230,7 +240,8 @@ class DeleteTodo(OptsUserInstance[NormalTodo], forms.ModelForm):
         return 0
 
 
-class ToggleTodo(OptsUserInstance[Todo], forms.ModelForm):
+class ToggleTodo(FormClass, OptsUserInstance[Todo], forms.ModelForm):
+
     class Meta:
         model = Todo
         fields = []
@@ -244,8 +255,8 @@ class ToggleTodo(OptsUserInstance[Todo], forms.ModelForm):
         return self.instance.pk
 
 
-class UpdateTodoSettings(OptsUserInstance[CustomUser], forms.ModelForm):
-    navs = ["settings"]
+class UpdateTodoSettings(FormClass, OptsUserInstance[CustomUser], forms.ModelForm):
+    addons = {"navs": ["settings"]}
     submit = "Save"
 
     class Meta:

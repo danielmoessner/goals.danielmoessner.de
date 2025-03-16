@@ -6,11 +6,12 @@ from apps.goals.models import Goal, ProgressMonitor
 from apps.todos.utils import setup_datetime_field
 from apps.users.models import CustomUser
 from config.fields import CustomModelMultipleChoiceField
+from config.form_class import FormClass
 from config.mixins import OptsUserInstance
 
 
-class CreateGoal(OptsUserInstance[Goal], forms.ModelForm):
-    navs = ["goals"]
+class CreateGoal(FormClass, OptsUserInstance[Goal], forms.ModelForm):
+    addons = {"navs": ["goals"]}
     parent = forms.ModelChoiceField(queryset=Goal.objects.none(), required=False)
     field_order = ["parent", "name"]
 
@@ -32,8 +33,8 @@ class CreateGoal(OptsUserInstance[Goal], forms.ModelForm):
         return self.instance.pk
 
 
-class UpdateGoal(OptsUserInstance[Goal], forms.ModelForm):
-    navs = ["goals"]
+class UpdateGoal(FormClass, OptsUserInstance[Goal], forms.ModelForm):
+    addons = {"navs": ["goals"]}
     parents = CustomModelMultipleChoiceField(
         queryset=Goal.objects.none(), required=False
     )
@@ -74,8 +75,8 @@ class UpdateGoal(OptsUserInstance[Goal], forms.ModelForm):
         return self.instance.pk
 
 
-class DeleteGoal(OptsUserInstance[Goal], forms.ModelForm):
-    navs = ["goals"]
+class DeleteGoal(FormClass, OptsUserInstance[Goal], forms.ModelForm):
+    addons = {"navs": ["goals"]}
     text = "Are you sure you want to delete this goal?"
     submit = "Delete"
 
@@ -91,8 +92,8 @@ class DeleteGoal(OptsUserInstance[Goal], forms.ModelForm):
         return self.instance.pk
 
 
-class AddMonitor(OptsUserInstance[ProgressMonitor], forms.ModelForm):
-    navs = ["goals"]
+class AddMonitor(FormClass, OptsUserInstance[ProgressMonitor], forms.ModelForm):
+    addons = {"navs": ["goals"]}
     submit = "Add"
 
     class Meta:
@@ -114,8 +115,8 @@ def get_monitor(user: CustomUser, pk: int) -> ProgressMonitor:
     return ProgressMonitor.objects.get(goal__user=user, pk=pk)
 
 
-class IncreaseProgress(OptsUserInstance[ProgressMonitor], forms.ModelForm):
-    navs = ["goals"]
+class IncreaseProgress(FormClass, OptsUserInstance[ProgressMonitor], forms.ModelForm):
+    addons = {"navs": ["goals"]}
     submit = "Increase"
 
     class Meta:
@@ -131,8 +132,8 @@ class IncreaseProgress(OptsUserInstance[ProgressMonitor], forms.ModelForm):
         return self.instance.pk
 
 
-class DecreaseProgress(OptsUserInstance[ProgressMonitor], forms.ModelForm):
-    navs = ["goals"]
+class DecreaseProgress(FormClass, OptsUserInstance[ProgressMonitor], forms.ModelForm):
+    addons = {"navs": ["goals"]}
     submit = "Decrease"
 
     class Meta:
@@ -148,8 +149,8 @@ class DecreaseProgress(OptsUserInstance[ProgressMonitor], forms.ModelForm):
         return self.instance.pk
 
 
-class UpdateMonitor(OptsUserInstance[ProgressMonitor], forms.ModelForm):
-    navs = ["goals"]
+class UpdateMonitor(FormClass, OptsUserInstance[ProgressMonitor], forms.ModelForm):
+    addons = {"navs": ["goals"]}
     submit = "Save"
 
     class Meta:
@@ -164,8 +165,8 @@ class UpdateMonitor(OptsUserInstance[ProgressMonitor], forms.ModelForm):
         return self.instance.pk
 
 
-class DeleteMonitor(OptsUserInstance[ProgressMonitor], forms.ModelForm):
-    navs = ["goals"]
+class DeleteMonitor(FormClass, OptsUserInstance[ProgressMonitor], forms.ModelForm):
+    addons = {"navs": ["goals"]}
     submit = "Delete"
     text = "Are you sure you want to delete this monitor?"
 
@@ -181,8 +182,8 @@ class DeleteMonitor(OptsUserInstance[ProgressMonitor], forms.ModelForm):
         return self.instance.pk
 
 
-class UpdateGoalSettings(OptsUserInstance[CustomUser], forms.ModelForm):
-    navs = ["settings"]
+class UpdateGoalSettings(FormClass, OptsUserInstance[CustomUser], forms.ModelForm):
+    addons = {"navs": ["settings"]}
     submit = "Save"
 
     class Meta:

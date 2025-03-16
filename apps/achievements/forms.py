@@ -2,11 +2,12 @@ from django import forms
 
 from apps.achievements.models import Achievement
 from apps.todos.utils import setup_date_field
+from config.form_class import FormClass
 from config.mixins import OptsUserInstance
 
 
-class CreateAchievement(OptsUserInstance[Achievement], forms.ModelForm):
-    navs = ["achievements"]
+class CreateAchievement(FormClass, OptsUserInstance[Achievement], forms.ModelForm):
+    addons = {"navs": ["achievements"]}
     submit = "Create"
 
     class Meta:
@@ -22,8 +23,8 @@ class CreateAchievement(OptsUserInstance[Achievement], forms.ModelForm):
         return self.instance.pk
 
 
-class UpdateAchievement(OptsUserInstance[Achievement], forms.ModelForm):
-    navs = ["achievements"]
+class UpdateAchievement(FormClass, OptsUserInstance[Achievement], forms.ModelForm):
+    addons = {"navs": ["achievements"]}
 
     class Meta:
         model = Achievement
@@ -40,8 +41,8 @@ class UpdateAchievement(OptsUserInstance[Achievement], forms.ModelForm):
         return self.instance.pk
 
 
-class DeleteAchievement(OptsUserInstance[Achievement], forms.ModelForm):
-    navs = ["achievements"]
+class DeleteAchievement(FormClass, OptsUserInstance[Achievement], forms.ModelForm):
+    addons = {"navs": ["achievements"]}
     text = "Are you sure you want to delete this achievement?"
     submit = "Delete"
 
