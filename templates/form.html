@@ -1,5 +1,6 @@
 <form method="post"
       class="django-form"
+      enctype="multipart/form-data"
       novalidate
       action="{{ request.get_full_path }}">
     {% include 'form_snippet.html' %}

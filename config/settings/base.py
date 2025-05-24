@@ -39,6 +39,7 @@ INSTALLED_APPS = [
     "apps.notes.apps.NotesConfig",
     "apps.story.apps.StoryConfig",
     "apps.achievements.apps.AchievementsConfig",
+    "apps.uploads.apps.UploadsConfig",
 ]
 
 MIDDLEWARE = [

@@ -1,0 +1,14 @@
+<div class="overflow-visible overflow-x-auto bg-slate-600">
+    <nav class="{% include 'nav.txt' %} ">
+        <ul class="flex space-x-4">
+            <li>
+                <a class="{% if request.resolver_match.url_name == 'uploads' %}underline{% endif %}"
+                   href="{% url 'uploads' %}">All</a>
+            </li>
+            <li>
+                <a class="{% if 'Create' in request.get_full_path %}underline{% endif %}"
+                   href="{% url 'form' 'CreateUpload' %}?success={% url 'uploads' %}">Create Upload</a>
+            </li>
+        </ul>
+    </nav>
+</div>

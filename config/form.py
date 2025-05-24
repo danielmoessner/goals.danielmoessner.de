@@ -39,6 +39,7 @@ from apps.todos.forms import (
     UpdateRepetitiveTodo,
     UpdateTodoSettings,
 )
+from apps.uploads.forms import CreateUpload, DeleteUpload, UploadFile
 from apps.users.forms import ChangeEmail, ChangePassword, Login, Register, ResetPassword
 from apps.users.models import CustomUser
 from apps.utils.functional import list_map
@@ -100,6 +101,9 @@ FORMS: list[type[FormClass]] = [
     DeleteMonitor,
     UpdateTodoSettings,
     UpdateGoalSettings,
+    CreateUpload,
+    UploadFile,
+    DeleteUpload,
 ]
 
 
@@ -111,6 +115,7 @@ NAVS = {
     "story": "story/nav.html",
     "settings": "users/nav.html",
     "goals": "goals/nav.html",
+    "uploads": "uploads/nav.html",
 }
 
 
@@ -164,8 +169,10 @@ def form_view(
             else:
                 data[key] = v
 
+    files = request.FILES if request.method == "POST" else None
+
     try:
-        form = form_class(request.user, opts=request.GET.dict(), data=data)
+        form = form_class(request.user, opts=request.GET.dict(), data=data, files=files)
     except InvalidUserError:
         return redirect_to_login(request.get_full_path(), settings.LOGIN_URL)
     set_request(form, request)

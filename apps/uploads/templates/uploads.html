@@ -1,0 +1,21 @@
+{% extends 'base.html' %}
+{% block prose %}
+    {% include 'nav.html' %}
+    {% include 'uploads/nav.html' %}
+    <ul class="p-5 space-y-2 list-disc list-inside">
+        {% for u in uploads %}
+            <li class="flex relative items-center group [&_a]:text-blue-600">
+                <div>
+                    <span class="block text-sm font-bold">{{ u.title }}
+                        <a class="ml-3" href="{% url 'download' u.pk %}">Download</a>
+                        <a class="ml-3"
+                           href="{% url 'form' 'UploadFile' %}?pk={{ u.pk }}&success={% url 'uploads' %}">U</a>
+                        <a class="ml-1"
+                           href="{% url 'form' 'DeleteUpload' %}?pk={{ u.pk }}&success={% url 'uploads' %}">D</a>
+                    </span>
+                    <span class="block text-xs leading-none">{{ a.date_str }}</span>
+                </div>
+            </li>
+        {% endfor %}
+    </ul>
+{% endblock %}

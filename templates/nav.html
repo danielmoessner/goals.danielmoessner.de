@@ -13,8 +13,11 @@
             <li class="{% if 'story' in request.get_full_path %}underline{% endif %}">
                 <a href="{% url 'story' %}">Story</a>
             </li>
-            <li class="{% if 'goals' in request.get_full_path %}underline{% endif %} !mr-8">
+            <li class="{% if 'goals' in request.get_full_path %}underline{% endif %}">
                 <a href="{% url 'goals' %}">Goals</a>
+            </li>
+            <li class="{% if 'uploads' in request.get_full_path %}underline{% endif %} !mr-8">
+                <a href="{% url 'uploads' %}">Uploads</a>
             </li>
             <li class="!ml-auto {% if 'users' in request.get_full_path %}underline{% endif %}">
                 <a href="{% url 'form' 'ChangeEmail' %}">Settings</a>
