@@ -26,7 +26,7 @@ from apps.todos.utils import (
 )
 from apps.users.models import CustomUser
 from config.form_class import FormClass
-from config.mixins import OptsUserInstance
+from config.mixins import OptsAnonymousUserInstance, OptsUserInstance
 
 USER = AbstractBaseUser | AnonymousUser | CustomUser
 OPTS = dict[str, Any]
@@ -321,14 +321,19 @@ class DeleteTodo(FormClass, OptsUserInstance[NormalTodo], forms.ModelForm):
         return 0
 
 
-class ToggleTodo(FormClass, OptsUserInstance[Todo], forms.ModelForm):
+class ToggleTodo(FormClass, OptsAnonymousUserInstance[Todo], forms.ModelForm):
+    page_uuid = forms.UUIDField(required=False, widget=forms.HiddenInput)
 
     class Meta:
         model = Todo
-        fields = []
+        fields = ["page_uuid"]
 
     def get_instance(self):
-        return get_specific_todo(pk=self.opts["pk"], user=self.user)
+        if isinstance(self.user, CustomUser):
+            return get_specific_todo(pk=self.opts["pk"], user=self.user)
+        return get_specific_todo(
+            pk=self.opts["pk"], page__share_uuid=self.opts["page_uuid"]
+        )
 
     def ok(self) -> int:
         self.instance.toggle()

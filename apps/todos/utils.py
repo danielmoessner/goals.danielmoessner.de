@@ -10,7 +10,6 @@ from apps.todos.models import (
     PipelineTodo,
     RepetitiveTodo,
 )
-from apps.users.models import CustomUser
 
 
 def get_end_of_week():
@@ -55,10 +54,10 @@ def get_date_widget():
     return forms.DateInput(attrs={"type": "date"}, format="%Y-%m-%d")
 
 
-def get_specific_todo(pk: int | str, user: CustomUser):
+def get_specific_todo(pk: int | str, **kwargs):
     for cls in [NormalTodo, NeverEndingTodo, RepetitiveTodo, PipelineTodo, NotesTodo]:
         try:
-            return cls.objects.get(pk=pk, user=user)
+            return cls.objects.get(pk=pk, **kwargs)
         except ObjectDoesNotExist:
             pass
     raise ObjectDoesNotExist()

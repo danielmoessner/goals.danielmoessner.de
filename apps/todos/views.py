@@ -72,9 +72,7 @@ def page(request: HttpRequest, pk: int):
     page = Page.objects.get(pk=pk, user=request.user)
     todos: list[Todo] = []
     for cls in [NormalTodo, PipelineTodo, NeverEndingTodo, RepetitiveTodo]:
-        todos += Todo.get_todos_user(request.user, cls).filter(
-            page=page, status="ACTIVE"
-        )
+        todos += Todo.get_todos_user(request.user, cls).filter(page=page)
     top_notes = NotesTodo.objects.filter(
         page=page, status="ACTIVE", position=NotesTodo.POSITION_TOP
     )
@@ -99,9 +97,7 @@ def shared_page(request: HttpRequest, uuid: int):
     page = Page.objects.get(share_uuid=uuid, is_shared=True)
     todos: list[Todo] = []
     for cls in [NormalTodo, PipelineTodo, NeverEndingTodo, RepetitiveTodo]:
-        todos += Todo.get_todos(cls.objects.filter(page=page), False).filter(
-            page=page, status="ACTIVE"
-        )
+        todos += Todo.get_todos(cls.objects.filter(page=page), False).filter(page=page)
     top_notes = NotesTodo.objects.filter(
         page=page, status="ACTIVE", position=NotesTodo.POSITION_TOP
     )

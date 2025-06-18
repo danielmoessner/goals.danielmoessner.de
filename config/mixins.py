@@ -22,7 +22,7 @@ class OptsUser:
         self.init()
 
 
-class OptsUserInstance(Generic[T]):
+class OptsAnonymousUserInstance(Generic[T]):
     instance: T
 
     def init(self):
@@ -32,10 +32,17 @@ class OptsUserInstance(Generic[T]):
         return None
 
     def __init__(self, user: USER, opts: OPTS, *args, **kwargs):
-        if not isinstance(user, CustomUser):
-            raise InvalidUserError()
         self.user = user
         self.opts = opts
         instance = self.get_instance()
         super().__init__(*args, instance=instance, **kwargs)  # type: ignore
         self.init()
+
+
+class OptsUserInstance(OptsAnonymousUserInstance[T]):
+    user: CustomUser
+
+    def __init__(self, user: USER, opts: OPTS, *args, **kwargs):
+        if not isinstance(user, CustomUser):
+            raise InvalidUserError()
+        super().__init__(user, opts, *args, **kwargs)

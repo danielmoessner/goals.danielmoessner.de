@@ -66,13 +66,14 @@ def form_view(
         return redirect_to_login(request.get_full_path(), settings.LOGIN_URL)
     set_request(form, request)
     if request.method == "POST" and form.is_valid():
-        ret = form.ok()
+        # ret = form.ok()
+        form.ok()
         if form._has_addon("stay_on_page"):
             return redirect(request.get_full_path())
         success = getattr(form, "success", None)
         if success:
             return redirect(success)
-        success_url = success_url.replace("0", str(ret))
+        # success_url = success_url.replace("0", str(ret)) not working with uuids
         return redirect(success_url)
 
     response = render(
