@@ -25,6 +25,9 @@ class Goal(models.Model):
         master_goals: models.QuerySet["Goal"]
         sub_goals: models.ManyToManyField["Goal", "Goal"]
         progress_monitors: models.QuerySet["ProgressMonitor"]
+        strategies: models.QuerySet["Strategy"]
+        sub_links: models.QuerySet["Link"]
+        master_links: models.QuerySet["Link"]
 
     class Meta:
         ordering = ("is_archived", "name")
@@ -39,9 +42,10 @@ class Goal(models.Model):
 
     def delete(self, *args, **kwargs):
         goals = list(self.master_goals.all())
-        super().delete(*args, **kwargs)
+        ret = super().delete(*args, **kwargs)
         for goal in goals:
             goal.reset()
+        return ret
 
     @property
     def progress_str(self):
@@ -190,8 +194,11 @@ class ProgressMonitor(models.Model):
 
     def delete(self, using=None, keep_parents=False):
         goal = self.goal
-        super(ProgressMonitor, self).delete(using=using, keep_parents=keep_parents)
+        ret = super(ProgressMonitor, self).delete(
+            using=using, keep_parents=keep_parents
+        )
         goal.reset()
+        return ret
 
     # getters
     @staticmethod
@@ -273,8 +280,9 @@ class Link(models.Model):
 
     def delete(self, using=None, keep_parents=False):
         master_goal = self.master_goal
-        super(Link, self).delete(using=using, keep_parents=keep_parents)
+        ret = super(Link, self).delete(using=using, keep_parents=keep_parents)
         master_goal.reset()
+        return ret
 
     # getters
     @staticmethod

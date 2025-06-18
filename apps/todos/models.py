@@ -1,18 +1,50 @@
 from datetime import timedelta
 from typing import TYPE_CHECKING, Optional
+from uuid import uuid4
 
 from django.core.exceptions import ObjectDoesNotExist
 from django.db import models
+from django.urls import reverse
 from django.utils import timezone
 
 from apps.users.models import CustomUser
 
 
-class Todo(models.Model):
+class Page(models.Model):
     name = models.CharField(max_length=300)
-    user = models.ForeignKey(
-        CustomUser, on_delete=models.CASCADE, related_name="to_dos"
+    user = models.ForeignKey(CustomUser, on_delete=models.CASCADE, related_name="pages")
+    created = models.DateTimeField(auto_created=True, null=True)
+    updated = models.DateTimeField(auto_now=True, null=True)
+    is_shared = models.BooleanField(default=False)
+    share_uuid = models.UUIDField(null=True, blank=True, unique=True, editable=False)
+
+    class Meta:
+        ordering = ("name",)
+
+    def __str__(self):
+        return self.name
+
+    def share(self):
+        self.is_shared = True
+        self.share_uuid = uuid4()
+
+    def unshare(self):
+        self.is_shared = False
+        self.share_uuid = None
+
+    @property
+    def link(self):
+        if self.is_shared and self.share_uuid:
+            return reverse("shared_page", kwargs={"uuid": self.share_uuid})
+        return ""
+
+
+class Todo(models.Model):
+    page = models.ForeignKey(
+        Page, null=True, blank=True, on_delete=models.CASCADE, related_name="todos"
     )
+    name = models.CharField(max_length=300)
+    user = models.ForeignKey(CustomUser, on_delete=models.CASCADE, related_name="todos")
     activate = models.DateTimeField(null=True, blank=True)
     deadline = models.DateTimeField(null=True, blank=True)
     completed = models.DateTimeField(null=True, blank=True)
@@ -22,22 +54,22 @@ class Todo(models.Model):
     updated = models.DateTimeField(auto_now=True, null=True)
 
     if TYPE_CHECKING:
-        pipeline_to_dos: models.QuerySet["PipelineTodo"]
+        pipeline_todos: models.QuerySet["PipelineTodo"]
 
     class Meta:
         ordering = ("status", "-completed", "name", "deadline", "activate")
 
     @staticmethod
-    def get_to_dos(to_dos, include_old_todos=False):
+    def get_todos(todos, include_old_todos=False):
         if not include_old_todos:
-            to_dos = to_dos.exclude(completed__lt=timezone.now() - timedelta(days=40))
-        return to_dos
+            todos = todos.exclude(completed__lt=timezone.now() - timedelta(days=40))
+        return todos
 
     @staticmethod
-    def get_to_dos_user(user, to_do_class):
-        all_to_dos = to_do_class.objects.filter(user=user)
-        to_dos = Todo.get_to_dos(all_to_dos, include_old_todos=user.show_old_todos)
-        return to_dos
+    def get_todos_user(user, to_do_class):
+        all_todos = to_do_class.objects.filter(user=user)
+        todos = Todo.get_todos(all_todos, include_old_todos=user.show_old_todos)
+        return todos
 
     @property
     def completed_sort(self):
@@ -114,9 +146,9 @@ class Todo(models.Model):
             self.completed = None
         # activate pipeline to dos
         if self.status == "DONE":
-            self.pipeline_to_dos.filter(activate=None).update(activate=timezone.now())
+            self.pipeline_todos.filter(activate=None).update(activate=timezone.now())
         elif self.status == "FAILED":
-            self.pipeline_to_dos.filter(activate=None).update(
+            self.pipeline_todos.filter(activate=None).update(
                 status="FAILED", activate=timezone.now()
             )
         # save
@@ -210,13 +242,11 @@ class RepetitiveTodo(Todo):
         return next_rtd
 
     def get_all_after(self):
-        repetitive_to_dos = [self]
+        repetitive_todos = [self]
         next_repetitive_to_do = self.get_next()
         if next_repetitive_to_do:
-            repetitive_to_dos = (
-                repetitive_to_dos + next_repetitive_to_do.get_all_after()
-            )
-        return repetitive_to_dos
+            repetitive_todos = repetitive_todos + next_repetitive_to_do.get_all_after()
+        return repetitive_todos
 
     def get_all_before(self):
         q = RepetitiveTodo.objects.filter(pk=self.pk)
@@ -319,7 +349,7 @@ class NeverEndingTodo(Todo):
 
 class PipelineTodo(Todo):
     previous = models.ForeignKey(
-        Todo, null=True, on_delete=models.SET_NULL, related_name="pipeline_to_dos"
+        Todo, null=True, on_delete=models.SET_NULL, related_name="pipeline_todos"
     )
 
 

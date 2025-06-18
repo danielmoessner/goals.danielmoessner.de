@@ -9,6 +9,12 @@
                 <a class="{% if request.GET.kind == 'next_week' %}underline{% endif %}"
                    href="{% url 'todos' %}?kind=next_week">Next Week</a>
             </li>
+            {% for p in pages %}
+                <li>
+                    <a class="{% if request.resolver_match.url_name == 'page' %}underline{% endif %}"
+                       href="{% url 'page' p.pk %}">{{ p }}</a>
+                </li>
+            {% endfor %}
             <li>
                 <a class="{% if request.GET.kind == 'activated' %}underline{% endif %}"
                    href="{% url 'todos' %}?kind=activated">Activated</a>
@@ -22,8 +28,12 @@
                    href="{% url 'todos' %}?kind=all">All</a>
             </li>
             <li>
-                <a class="{% if 'Create' in request.get_full_path %}underline{% endif %}"
+                <a class="{% if 'CreateNormalTodo' in request.get_full_path %}underline{% endif %}"
                    href="{% url 'form' 'CreateNormalTodo' %}?success={% url 'todos' %}&variant=this_week">Create Todo</a>
+            </li>
+            <li>
+                <a class="{% if 'CreatePage' in request.get_full_path %}underline{% endif %}"
+                   href="{% url 'form' 'CreatePage' %}?success={% url 'todos' %}">Create Page</a>
             </li>
         </ul>
     </nav>

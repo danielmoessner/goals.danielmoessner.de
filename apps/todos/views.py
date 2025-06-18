@@ -8,6 +8,7 @@ from apps.todos.models import (
     NeverEndingTodo,
     NormalTodo,
     NotesTodo,
+    Page,
     PipelineTodo,
     RepetitiveTodo,
     Todo,
@@ -45,7 +46,7 @@ def todos(request: HttpRequest):
         elif kind == "open":
             f = Q(status="ACTIVE")
 
-        todos += Todo.get_to_dos_user(request.user, cls).filter(f)
+        todos += Todo.get_todos_user(request.user, cls).filter(f).filter(page=None)
     todos = list_sort(todos, lambda t: t.completed_sort)
     top_notes = NotesTodo.objects.filter(
         user=request.user, status="ACTIVE", position=NotesTodo.POSITION_TOP
@@ -53,8 +54,67 @@ def todos(request: HttpRequest):
     bottom_notes = NotesTodo.objects.filter(
         user=request.user, status="ACTIVE", position=NotesTodo.POSITION_BOTTOM
     )
+    pages = Page.objects.filter(user=request.user).order_by("name")
     return render(
         request,
         "todos.html",
-        {"todos": todos, "top_notes": top_notes, "bottom_notes": bottom_notes},
+        {
+            "todos": todos,
+            "top_notes": top_notes,
+            "bottom_notes": bottom_notes,
+            "pages": pages,
+        },
+    )
+
+
+@login_required
+def page(request: HttpRequest, pk: int):
+    page = Page.objects.get(pk=pk, user=request.user)
+    todos: list[Todo] = []
+    for cls in [NormalTodo, PipelineTodo, NeverEndingTodo, RepetitiveTodo]:
+        todos += Todo.get_todos_user(request.user, cls).filter(
+            page=page, status="ACTIVE"
+        )
+    top_notes = NotesTodo.objects.filter(
+        page=page, status="ACTIVE", position=NotesTodo.POSITION_TOP
+    )
+    bottom_notes = NotesTodo.objects.filter(
+        page=page, status="ACTIVE", position=NotesTodo.POSITION_BOTTOM
+    )
+    pages = Page.objects.filter(user=request.user).order_by("name")
+    return render(
+        request,
+        "todos.html",
+        {
+            "page": page,
+            "todos": todos,
+            "top_notes": top_notes,
+            "bottom_notes": bottom_notes,
+            "pages": pages,
+        },
+    )
+
+
+def shared_page(request: HttpRequest, uuid: int):
+    page = Page.objects.get(share_uuid=uuid, is_shared=True)
+    todos: list[Todo] = []
+    for cls in [NormalTodo, PipelineTodo, NeverEndingTodo, RepetitiveTodo]:
+        todos += Todo.get_todos(cls.objects.filter(page=page), False).filter(
+            page=page, status="ACTIVE"
+        )
+    top_notes = NotesTodo.objects.filter(
+        page=page, status="ACTIVE", position=NotesTodo.POSITION_TOP
+    )
+    bottom_notes = NotesTodo.objects.filter(
+        page=page, status="ACTIVE", position=NotesTodo.POSITION_BOTTOM
+    )
+    return render(
+        request,
+        "shared.html",
+        {
+            "page": page,
+            "todos": todos,
+            "top_notes": top_notes,
+            "bottom_notes": bottom_notes,
+        },
     )

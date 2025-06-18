@@ -9,6 +9,7 @@ from apps.todos.models import (
     NeverEndingTodo,
     NormalTodo,
     NotesTodo,
+    Page,
     PipelineTodo,
     RepetitiveTodo,
     Todo,
@@ -32,11 +33,91 @@ OPTS = dict[str, Any]
 T = TypeVar("T", bound=models.Model)
 
 
+class CreatePage(FormClass, OptsUserInstance[Page], forms.ModelForm):
+    addons = {"navs": ["todos"]}
+
+    class Meta:
+        model = Page
+        fields = ["name"]
+
+    def ok(self):
+        self.instance.user = self.user
+        self.instance.save()
+        return self.instance.pk
+
+
+class UpdatePage(FormClass, OptsUserInstance[Page], forms.ModelForm):
+    addons = {"navs": ["todos"]}
+
+    class Meta:
+        model = Page
+        fields = ["name"]
+
+    def get_instance(self):
+        return Page.objects.get(pk=self.opts["pk"], user=self.user)
+
+    def ok(self) -> int:
+        self.instance.save()
+        return self.instance.pk
+
+
+class SharePage(FormClass, OptsUserInstance[Page], forms.ModelForm):
+    addons = {"navs": ["todos"]}
+
+    class Meta:
+        model = Page
+        fields = []
+
+    @property
+    def text(self) -> str:
+        instance = self.get_instance()
+        if instance.is_shared:
+            return "Do you want to stop sharing this page?"
+        return "Do you want to share this page with everybody who has the link?"
+
+    @property
+    def submit(self) -> str:
+        instance = self.get_instance()
+        if instance.is_shared:
+            return "Stop sharing"
+        return "Share"
+
+    def get_instance(self):
+        if not hasattr(self, "instance"):
+            self.instance = Page.objects.get(pk=self.opts["pk"], user=self.user)
+        return self.instance
+
+    def ok(self) -> int:
+        if self.instance.is_shared:
+            self.instance.unshare()
+        else:
+            self.instance.share()
+        self.instance.save()
+        return self.instance.pk
+
+
+class DeletePage(FormClass, OptsUserInstance[Page], forms.ModelForm):
+    # addons = {"navs": ["todos"]}
+    text = "Are you sure you want to delete this page?"
+    submit = "Delete"
+
+    class Meta:
+        model = Page
+        fields = []
+
+    def get_instance(self):
+        return Page.objects.get(pk=self.opts["pk"], user=self.user)
+
+    def ok(self) -> int:
+        self.instance.delete()
+        return 0
+
+
 class CreateTodoFast(FormClass, OptsUserInstance[Todo], forms.ModelForm):
 
     class Meta:
         model = NormalTodo
-        fields = ["name"]
+        fields = ["name", "page"]
 
     def ok(self):
         if self.opts.get("kind", "") == "next_week":

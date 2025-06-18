@@ -1,0 +1,38 @@
+{% if page %}
+    <hr>
+    <div class="px-5 py-2">
+        <span class="text-xs font-bold">{{ page.name }}</span>
+        <a class="ml-3 font-bold text-xs text-blue-600"
+           href="{% url 'form' 'UpdatePage' %}?pk={{ page.pk }}&success={{ request.get_full_path }}">U</a>
+        {% if page.is_shared %}
+            <a class="ml-3 text-xs font-bold text-blue-600"
+               href="{% url 'form' 'SharePage' %}?pk={{ page.pk }}&success={{ request.get_full_path }}">Unshare Page</a>
+            <button class="ml-3 text-xs font-bold text-blue-600" id="copy-link-btn">Copy Link</button>
+            <script>
+  // Assume page.link is available as a global JS variable
+  // Example: const page = { link: "https://example.com" };
+  const btn = document.getElementById('copy-link-btn');
+  btn.addEventListener('click', async () => {
+    try {
+      await navigator.clipboard.writeText("{{ request.get_host }}{{ page.link }}");
+      const originalText = btn.textContent;
+      btn.textContent = 'Copied';
+      btn.disabled = true;
+      setTimeout(() => {
+        btn.textContent = originalText;
+        btn.disabled = false;
+      }, 5000);
+    } catch (err) {
+      btn.textContent = 'Error';
+      setTimeout(() => {
+        btn.textContent = 'Copy Link';
+      }, 2000);
+    }
+  });
+            </script>
+        {% else %}
+            <a class="ml-3 text-xs font-bold text-blue-600"
+               href="{% url 'form' 'SharePage' %}?pk={{ page.pk }}&success={{ request.get_full_path }}">Share Page</a>
+        {% endif %}
+    </div>
+{% endif %}

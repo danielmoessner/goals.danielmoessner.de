@@ -1,10 +1,8 @@
 {% extends 'base.html' %}
 {% block prose %}
-    {% include 'nav.html' %}
-    {% include 'todos/nav.html' %}
+    {% include 'todos/symbols/head.html' %}
     {% include 'todos/symbols/notes.html' with notes=top_notes position='top' %}
     {% include 'todos/symbols/todos.html' %}
     {% include 'todos/symbols/create_todo_fast.html' %}
     {% include 'todos/symbols/notes.html' with notes=bottom_notes position='bottom' %}
-    {% include 'todos/symbols/page.html' %}
 {% endblock %}
