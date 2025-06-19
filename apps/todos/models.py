@@ -2,6 +2,7 @@ from datetime import datetime, timedelta
 from typing import TYPE_CHECKING, Optional, TypedDict
 from uuid import uuid4
 
+from asgiref.sync import sync_to_async
 from django.core.exceptions import ObjectDoesNotExist
 from django.db import models
 from django.urls import reverse
@@ -80,13 +81,18 @@ class Page(models.Model):
             return True
         return False
 
+    def _get_todo_names(self) -> str:
+        todos = self.todos.filter(status="ACTIVE")
+        if not todos:
+            return "No active todos."
+        return "\n".join(todo.name for todo in todos)
+
     async def send_updates(self):
         if not self.should_send_new_message():
             return
         pre = f"{self.telegram_user_tag}: " if self.telegram_user_tag else ""
-        todos = self.todos.filter(status="ACTIVE")
-        todo_names = "\n".join(todo.name for todo in todos)
-        text = f"{pre}You have {todos.count()} active todos:\n{todo_names}"
+        todo_names = await sync_to_async(self._get_todo_names)()
+        text = f"{pre}You have {len(todo_names)} active todos:\n{todo_names}"
         await self.send_message(text)
         self.messages.append(
             {
