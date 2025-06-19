@@ -1,5 +1,5 @@
-from datetime import timedelta
-from typing import TYPE_CHECKING, Optional
+from datetime import datetime, timedelta
+from typing import TYPE_CHECKING, Optional, TypedDict
 from uuid import uuid4
 
 from django.core.exceptions import ObjectDoesNotExist
@@ -8,6 +8,12 @@ from django.urls import reverse
 from django.utils import timezone
 
 from apps.users.models import CustomUser
+from config.bot import get_bot
+
+
+class Message(TypedDict):
+    text: str
+    datetime: datetime
 
 
 class Page(models.Model):
@@ -21,6 +27,11 @@ class Page(models.Model):
     telegram_chat_id = models.CharField(max_length=100, null=True, blank=True)
     telegram_user_tag = models.CharField(max_length=100, null=True, blank=True)
 
+    messages = models.JSONField(default=list, blank=True)
+
+    if TYPE_CHECKING:
+        todos: models.QuerySet["Todo"]
+
     class Meta:
         ordering = ("name",)
 
@@ -33,6 +44,19 @@ class Page(models.Model):
             return reverse("shared_page", kwargs={"uuid": self.share_uuid})
         return ""
 
+    @property
+    def last_message(self) -> Optional[Message]:
+        if not self.messages:
+            return None
+        msg: dict = self.messages[-1]
+        return Message(
+            text=msg.get("text", ""),
+            datetime=datetime.fromisoformat(msg.get("datetime", "1970-01-01T00:00:00")),
+        )
+
+    def can_send_updates(self) -> bool:
+        return self.is_shared and self.telegram_chat_id is not None
+
     def share(self):
         self.is_shared = True
         self.share_uuid = uuid4()
@@ -40,6 +64,37 @@ class Page(models.Model):
     def unshare(self):
         self.is_shared = False
         self.share_uuid = None
+
+    async def send_message(self, text: str):
+        bot = get_bot()
+        assert self.telegram_chat_id is not None
+        await bot.send_message(chat_id=self.telegram_chat_id, text=text)
+
+    def should_send_new_message(self) -> bool:
+        if not self.messages:
+            return True
+        last_msg = self.last_message
+        if last_msg and last_msg["datetime"] + timedelta(hours=2) > timezone.now():
+            return False
+        if timezone.now().hour == 8:
+            return True
+        return False
+
+    async def send_updates(self):
+        if not self.should_send_new_message():
+            return
+        pre = f"{self.telegram_user_tag}: " if self.telegram_user_tag else ""
+        todos = self.todos.filter(status="ACTIVE")
+        todo_names = "\n".join(todo.name for todo in todos)
+        text = f"{pre}You have {todos.count()} active todos:\n{todo_names}"
+        await self.send_message(text)
+        self.messages.append(
+            {
+                "text": text,
+                "datetime": timezone.now().isoformat(),
+            }
+        )
+        self.save()
 
 
 class Todo(models.Model):
