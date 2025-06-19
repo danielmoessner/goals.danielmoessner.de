@@ -17,6 +17,7 @@ from apps.todos.models import (
 from apps.todos.utils import (
     add_week,
     get_datetime_widget,
+    get_end_of_next_week,
     get_end_of_week,
     get_specific_todo,
     get_start_of_next_week,
@@ -114,18 +115,26 @@ class DeletePage(FormClass, OptsUserInstance[Page], forms.ModelForm):
 
 
 class CreateTodoFast(FormClass, OptsUserInstance[Todo], forms.ModelForm):
+    option = forms.CharField(required=False, widget=forms.HiddenInput)
 
     class Meta:
         model = NormalTodo
         fields = ["name", "page"]
 
     def ok(self):
+        submitted_option = self.cleaned_data.get("option", "")
+        deadline = None
         if self.opts.get("kind", "") == "next_week":
             activate = get_start_of_next_week()
+            if submitted_option == "with_deadline":
+                deadline = get_end_of_next_week()
         else:
             activate = timezone.now()
+            if submitted_option == "with_deadline":
+                deadline = get_end_of_week()
         self.instance.user = self.user
         self.instance.activate = activate
+        self.instance.deadline = deadline
         self.instance.save()
         return self.instance.pk
 

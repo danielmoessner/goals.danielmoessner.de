@@ -8,7 +8,33 @@
                name="name"
                placeholder="Add Todo..." />
         <input type="hidden" name="page" value="{{ page.pk }}" />
+        <input type="hidden" name="option" value="with_deadline" />
+        <button type="button"
+                tabindex="1"
+                onclick="document.querySelector('dialog').showModal();"
+                class="cursor-pointer px-2 py-1 text-sm font-semibold text-form shadow-sm bg-form/10 hover:bg-form/20 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-form/20 h-8 border border-l-0 rounded-none border-form/50">
+            S
+        </button>
         {% include 'btn/secondary_submit.html' with text="Add" class="h-8 border border-l-0 rounded-l-none border-form/50" %}
         {% csrf_token %}
     </form>
 </div>
+<dialog class="mx-auto w-64 p-5 bg-white rounded shadow top-[20%]">
+    <div>
+        <h3 class="font-medium">Creation Settings</h3>
+        <div class="mt-4">
+            <label>
+                <input type="checkbox" checked onclick="toggle()">
+                With deadline
+            </label>
+        </div>
+        <div class="mt-4">
+            <button type="button" onclick="document.querySelector('dialog').close()">Close</button>
+        </div>
+    </div>
+</dialog>
+<script>
+function toggle() {
+    document.querySelector('[name="option"]').value = document.querySelector('[name="option"]').value === 'with_deadline' ? 'without_deadline' : 'with_deadline';
+}
+</script>
