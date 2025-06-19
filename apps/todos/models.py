@@ -81,18 +81,20 @@ class Page(models.Model):
             return True
         return False
 
-    def _get_todo_names(self) -> str:
+    def _get_todo_names(self) -> tuple[int, str]:
         todos = self.todos.filter(status="ACTIVE")
         if not todos:
-            return "No active todos."
-        return "\n".join(todo.name for todo in todos)
+            return 0, "No active todos."
+        return todos.count(), "\n".join(todo.name for todo in todos)
 
     async def send_updates(self):
         if not self.should_send_new_message():
             return
         pre = f"{self.telegram_user_tag}: " if self.telegram_user_tag else ""
-        todo_names = await sync_to_async(self._get_todo_names)()
-        text = f"{pre}You have {len(todo_names)} active todos:\n{todo_names}"
+        count, names = await sync_to_async(self._get_todo_names)()
+        if count == 0:
+            return
+        text = f"{pre}You have {count} active todos:\n{names}"
         await self.send_message(text)
         self.messages.append(
             {
@@ -100,7 +102,7 @@ class Page(models.Model):
                 "datetime": timezone.now().isoformat(),
             }
         )
-        self.save()
+        await sync_to_async(self.save)()
 
 
 class Todo(models.Model):
