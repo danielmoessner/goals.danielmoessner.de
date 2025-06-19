@@ -87,7 +87,43 @@ class Page(models.Model):
             return 0, "No active todos."
         return todos.count(), "\n".join(todo.name for todo in todos)
 
-    async def send_updates(self):
+    def _get_completed_since_last_message(self) -> list["Todo"]:
+        last_msg = self.last_message
+        if not last_msg:
+            return []
+        return list(
+            self.todos.filter(
+                completed__gt=last_msg["datetime"], status="DONE"
+            ).order_by("-completed")
+        )
+
+    def _get_completed_names(self) -> str:
+        completed_todos = self._get_completed_since_last_message()
+        if not completed_todos:
+            return ""
+        return "\n".join(
+            f"{todo.name} at {todo.completed.strftime('%d.%m.%Y %H:%M') if todo.completed else ''}"
+            for todo in completed_todos
+        )
+
+    def _save_message(self, text: str):
+        self.messages.append(
+            {
+                "text": text,
+                "datetime": timezone.now().isoformat(),
+            }
+        )
+        self.save()
+
+    async def send_completed_todos(self):
+        completed_names = await sync_to_async(self._get_completed_names)()
+        if not completed_names:
+            return
+        text = f"Thank you for completing the following todos {self.telegram_user_tag}:\n{completed_names}"
+        await self.send_message(text)
+        await sync_to_async(self._save_message)(text)
+
+    async def send_current_todos(self):
         if not self.should_send_new_message():
             return
         pre = f"{self.telegram_user_tag}: " if self.telegram_user_tag else ""
@@ -96,14 +132,11 @@ class Page(models.Model):
             return
         link = f"Check: https://goals.danielmoessner.de{self.link}"
         text = f"{pre}You have {count} active todos:\n{names}\n{link}"
-        await self.send_message(text)
-        self.messages.append(
-            {
-                "text": text,
-                "datetime": timezone.now().isoformat(),
-            }
-        )
-        await sync_to_async(self.save)()
+        await sync_to_async(self._save_message)(text)
+
+    async def send_updates(self):
+        await self.send_completed_todos()
+        await self.send_current_todos()
 
 
 class Todo(models.Model):
