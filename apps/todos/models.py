@@ -94,7 +94,8 @@ class Page(models.Model):
         count, names = await sync_to_async(self._get_todo_names)()
         if count == 0:
             return
-        text = f"{pre}You have {count} active todos:\n{names}"
+        link = f"Check: https://goals.danielmoessner.de{self.link}"
+        text = f"{pre}You have {count} active todos:\n{names}\n{link}"
         await self.send_message(text)
         self.messages.append(
             {
