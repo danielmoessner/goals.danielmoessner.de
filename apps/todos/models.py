@@ -18,11 +18,20 @@ class Page(models.Model):
     is_shared = models.BooleanField(default=False)
     share_uuid = models.UUIDField(null=True, blank=True, unique=True, editable=False)
 
+    telegram_chat_id = models.CharField(max_length=100, null=True, blank=True)
+    telegram_user_tag = models.CharField(max_length=100, null=True, blank=True)
+
     class Meta:
         ordering = ("name",)
 
     def __str__(self):
         return self.name
+
+    @property
+    def link(self):
+        if self.is_shared and self.share_uuid:
+            return reverse("shared_page", kwargs={"uuid": self.share_uuid})
+        return ""
 
     def share(self):
         self.is_shared = True
@@ -31,12 +40,6 @@ class Page(models.Model):
     def unshare(self):
         self.is_shared = False
         self.share_uuid = None
-
-    @property
-    def link(self):
-        if self.is_shared and self.share_uuid:
-            return reverse("shared_page", kwargs={"uuid": self.share_uuid})
-        return ""
 
 
 class Todo(models.Model):

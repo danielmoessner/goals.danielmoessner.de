@@ -52,7 +52,7 @@ class UpdatePage(FormClass, OptsUserInstance[Page], forms.ModelForm):
 
     class Meta:
         model = Page
-        fields = ["name"]
+        fields = ["name", "telegram_chat_id", "telegram_user_tag"]
 
     def get_instance(self):
         return Page.objects.get(pk=self.opts["pk"], user=self.user)

@@ -33,5 +33,6 @@ dependencies = [
     "pytest-django==4.9.*",
     "pytz==2025.*",
     "ruff==0.9.*",
+    "python-telegram-bot==22.*",
 ]
 requires-python = ">=3.11"
