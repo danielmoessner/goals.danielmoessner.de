@@ -6,4 +6,4 @@ mkdir tmp/logs
 mkdir tmp/media
 mkdir tmp/static
 touch tmp/logs/django.log
-ln -s /home/goals.danielmoessner.de/apache.conf /etc/apache2/sites-available/goals.danielmoessner.de.conf
+ln -sf /home/goals.danielmoessner.de/apache.conf /etc/apache2/sites-available/goals.danielmoessner.de.conf
