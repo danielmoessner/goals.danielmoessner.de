@@ -70,6 +70,7 @@ class Page(models.Model):
         bot = get_bot()
         assert self.telegram_chat_id is not None
         await bot.send_message(chat_id=self.telegram_chat_id, text=text)
+        print("bot sent message")
 
     def should_send_new_message(self) -> bool:
         last_msg = self.last_message
@@ -77,7 +78,7 @@ class Page(models.Model):
             return True
         if last_msg["datetime"] + timedelta(hours=2) > timezone.now():
             return False
-        if timezone.now().hour == 12:
+        if timezone.now().hour == 13:
             return True
         return False
 
