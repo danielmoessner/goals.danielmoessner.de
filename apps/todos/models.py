@@ -77,7 +77,7 @@ class Page(models.Model):
             return True
         if last_msg["datetime"] + timedelta(hours=2) > timezone.now():
             return False
-        if timezone.now().hour == 13:
+        if timezone.now().hour == 8:
             return True
         return False
 
