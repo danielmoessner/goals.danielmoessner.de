@@ -72,12 +72,12 @@ class Page(models.Model):
         await bot.send_message(chat_id=self.telegram_chat_id, text=text)
 
     def should_send_new_message(self) -> bool:
-        if not self.messages:
-            return True
         last_msg = self.last_message
-        if last_msg and last_msg["datetime"] + timedelta(hours=2) > timezone.now():
+        if not last_msg:
+            return True
+        if last_msg["datetime"] + timedelta(hours=2) > timezone.now():
             return False
-        if timezone.now().hour == 8:
+        if timezone.now().hour == 12:
             return True
         return False
 
