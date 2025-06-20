@@ -6,16 +6,17 @@
         <input type="text"
                class="inline-block h-8 px-3 border rounded-md rounded-r-none shadow-none appearance-none focus:z-10 text-slate-900 border-form/50 ring-form focus:ring-1 focus:border-form focus:outline-none sm:text-sm"
                name="name"
+               tabindex="1"
                placeholder="Add Todo..." />
         <input type="hidden" name="page" value="{{ page.pk }}" />
         <input type="hidden" name="option" value="with_deadline" />
         <button type="button"
-                tabindex="1"
+                tabindex="-1"
                 onclick="document.querySelector('dialog').showModal();"
                 class="cursor-pointer px-2 py-1 text-sm font-semibold text-form shadow-sm bg-form/10 hover:bg-form/20 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-form/20 h-8 border border-l-0 rounded-none border-form/50">
             S
         </button>
-        {% include 'btn/secondary_submit.html' with text="Add" class="h-8 border border-l-0 rounded-l-none border-form/50" %}
+        {% include 'btn/secondary_submit.html' with attrs='tabindex="2"' text="Add" class="h-8 border border-l-0 rounded-l-none border-form/50" %}
         {% csrf_token %}
     </form>
 </div>
