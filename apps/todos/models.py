@@ -70,7 +70,6 @@ class Page(models.Model):
         bot = get_bot()
         assert self.telegram_chat_id is not None
         await bot.send_message(chat_id=self.telegram_chat_id, text=text)
-        print("bot sent message")
 
     def should_send_new_message(self) -> bool:
         last_msg = self.last_message
@@ -133,6 +132,7 @@ class Page(models.Model):
             return
         link = f"Check: https://goals.danielmoessner.de{self.link}"
         text = f"{pre}You have {count} active todos:\n{names}\n{link}"
+        await self.send_message(text)
         await sync_to_async(self._save_message)(text)
 
     async def send_updates(self):
