@@ -85,7 +85,7 @@ class Page(models.Model):
         todos = self.todos.filter(status="ACTIVE")
         if not todos:
             return 0, "No active todos."
-        return todos.count(), "\n".join(todo.name for todo in todos)
+        return todos.count(), "\n".join(f"⏰ {todo.name}" for todo in todos)
 
     def _get_completed_since_last_message(self) -> list["Todo"]:
         last_msg = self.last_message
@@ -119,19 +119,19 @@ class Page(models.Model):
         completed_names = await sync_to_async(self._get_completed_names)()
         if not completed_names:
             return
-        text = f"Thank you for completing the following todos {self.telegram_user_tag}:\n{completed_names}"
+        text = f"{self.telegram_user_tag} thank you for completing the following todos:\n{completed_names}"
         await self.send_message(text)
         await sync_to_async(self._save_message)(text)
 
     async def send_current_todos(self):
         if not self.should_send_new_message():
             return
-        pre = f"{self.telegram_user_tag}: " if self.telegram_user_tag else ""
+        pre = f"{self.telegram_user_tag} " if self.telegram_user_tag else ""
         count, names = await sync_to_async(self._get_todo_names)()
         if count == 0:
             return
         link = f"Check: https://goals.danielmoessner.de{self.link}"
-        text = f"{pre}You have {count} active todos:\n{names}\n{link}"
+        text = f"{pre}you have {count} active todos:\n{names}\n{link}"
         await self.send_message(text)
         await sync_to_async(self._save_message)(text)
 
