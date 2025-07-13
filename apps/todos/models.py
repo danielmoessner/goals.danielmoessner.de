@@ -85,7 +85,7 @@ class Page(models.Model):
         todos = self.todos.filter(status="ACTIVE")
         if not todos:
             return 0, "No active todos."
-        return todos.count(), "\n".join(f"⏰ {todo.name}" for todo in todos)
+        return todos.count(), "\n".join(f"🏋️ {todo.name}" for todo in todos)
 
     def _get_completed_since_last_message(self) -> list["Todo"]:
         last_msg = self.last_message
