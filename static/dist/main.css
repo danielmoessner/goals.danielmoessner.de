@@ -197,14 +197,17 @@
   }
 }
 @layer utilities {
+  .collapse {
+    visibility: collapse;
+  }
+  .fixed {
+    position: fixed;
+  }
   .relative {
     position: relative;
   }
   .static {
     position: static;
-  }
-  .inset-0 {
-    inset: calc(var(--spacing) * 0);
   }
   .top-\[20\%\] {
     top: 20%;
@@ -922,9 +925,6 @@
   .h-8 {
     height: calc(var(--spacing) * 8);
   }
-  .h-auto {
-    height: auto;
-  }
   .min-h-screen {
     min-height: 100vh;
   }
@@ -945,6 +945,9 @@
   }
   .max-w-none {
     max-width: none;
+  }
+  .grow {
+    flex-grow: 1;
   }
   .cursor-pointer {
     cursor: pointer;
@@ -1353,9 +1356,19 @@
       outline-style: none;
     }
   }
+  .sm\:col-span-1 {
+    @media (width >= 40rem) {
+      grid-column: span 1 / span 1;
+    }
+  }
   .sm\:col-span-2 {
     @media (width >= 40rem) {
       grid-column: span 2 / span 2;
+    }
+  }
+  .sm\:col-span-3 {
+    @media (width >= 40rem) {
+      grid-column: span 3 / span 3;
     }
   }
   .sm\:grid-cols-3 {

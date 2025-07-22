@@ -289,7 +289,7 @@ class CreateNotesTodo(FormClass, OptsUserInstance[NotesTodo], forms.ModelForm):
 
     class Meta:
         model = NotesTodo
-        fields = ["position", "name", "notes"]
+        fields = ["position", "name", "notes", "width"]
 
     def ok(self):
         self.instance.user = self.user
@@ -303,7 +303,7 @@ class UpdateNotesTodo(FormClass, OptsUserInstance[NotesTodo], forms.ModelForm):
 
     class Meta:
         model = NotesTodo
-        fields = ["position", "name", "notes"]
+        fields = CreateNotesTodo.Meta.fields
 
     def get_instance(self):
         return NotesTodo.objects.get(pk=self.opts["pk"], user=self.user)

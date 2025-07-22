@@ -460,6 +460,12 @@ class NotesTodo(Todo):
     POSITION_BOTTOM = "BOTTOM"
     POSITION_CHOICES = ((POSITION_TOP, "Top"), (POSITION_BOTTOM, "Bottom"))
     position = models.CharField(choices=POSITION_CHOICES, max_length=20, default="TOP")
+    WIDTH_CHOICES = (
+        ("NARROW", "Narrow"),
+        ("MEDIUM", "Medium"),
+        ("WIDE", "Wide"),
+    )
+    width = models.CharField(choices=WIDTH_CHOICES, max_length=20, default="MEDIUM")
 
     @property
     def avg_line_length(self):
@@ -468,3 +474,13 @@ class NotesTodo(Todo):
     @property
     def is_wide(self):
         return self.avg_line_length > 45
+
+    @property
+    def width_class(self):
+        if self.width == "NARROW":
+            return "sm:col-span-1"
+        elif self.width == "MEDIUM":
+            return "sm:col-span-2"
+        elif self.width == "WIDE":
+            return "sm:col-span-3"
+        return ""
