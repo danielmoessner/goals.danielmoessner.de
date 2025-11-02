@@ -16,3 +16,10 @@
     </div>
     {% if position == "top" %}<hr>{% endif %}
 {% endif %}
+{% if page and position == "top" %}
+    <div class="px-5 py-2">
+        <a class="font-bold text-xs text-blue-600"
+           href="{% url 'form' 'AddNoteToPage' %}?pk={{ page.pk }}&success={{ request.get_full_path }}">Add Note</a>
+    </div>
+    <hr>
+{% endif %}

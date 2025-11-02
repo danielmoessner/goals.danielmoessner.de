@@ -21,6 +21,7 @@ from apps.goals.forms import (
 from apps.notes.forms import CreateNote, DeleteNote, UpdateNote
 from apps.story.forms import UpdateStory
 from apps.todos.forms import (
+    AddNoteToPage,
     CreateNeverEndingTodo,
     CreateNormalTodo,
     CreateNotesTodo,
@@ -98,6 +99,7 @@ FORMS: list[type[FormClass]] = [
     UpdateMonitor,
     DeleteMonitor,
     UpdateTodoSettings,
+    AddNoteToPage,
     UpdateGoalSettings,
     CreateUpload,
     UploadFile,

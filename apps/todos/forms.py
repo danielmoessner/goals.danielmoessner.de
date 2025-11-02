@@ -364,3 +364,30 @@ class UpdateTodoSettings(FormClass, OptsUserInstance[CustomUser], forms.ModelFor
     def ok(self):
         self.instance.save()
         return self.instance.pk
+
+
+class AddNoteToPage(FormClass, OptsUserInstance[Page], forms.ModelForm):
+    addons = {"navs": ["todos"]}
+    todo = forms.ModelChoiceField(
+        queryset=NotesTodo.objects.none(),
+        label="Select Todo",
+    )
+
+    class Meta:
+        model = Page
+        fields = ["todo"]
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        todo_field: forms.ModelChoiceField = self.fields["todo"]  # type: ignore
+        todo_field.queryset = NotesTodo.objects.filter(user=self.user).order_by("name")
+
+    def get_instance(self):
+        return Page.objects.get(pk=self.opts["pk"], user=self.user)
+
+    def ok(self) -> int:
+        todo: NotesTodo = self.cleaned_data["todo"]
+        assert self.instance is not None
+        todo.page = self.instance
+        todo.save()
+        return self.instance.pk
