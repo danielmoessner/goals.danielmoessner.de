@@ -82,7 +82,11 @@ class Page(models.Model):
         return False
 
     def _get_todo_names(self) -> tuple[int, str]:
-        todos = self.todos.filter(status="ACTIVE")
+        todos = self.todos.filter(status="ACTIVE").exclude(
+            pk__in=NotesTodo.objects.filter(
+                pk__in=self.todos.values_list("pk", flat=True)
+            ).values_list("pk", flat=True)
+        )
         if not todos:
             return 0, "No active todos."
         return todos.count(), "\n".join(f"🏋️ {todo.name}" for todo in todos)
