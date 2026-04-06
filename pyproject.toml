@@ -1,14 +1,12 @@
 [tool.pytest.ini_options]
 DJANGO_SETTINGS_MODULE = "config.settings.local"
 
-
 [tool.black]
 line-length = 88
 
 [tool.isort]
 known_local_folder = ["apps", "config"]
 profile = "black"
-
 
 [project]
 name = "goals.danielmoessner.de"
@@ -20,19 +18,19 @@ authors = [
 readme = "README.md"
 license = {text = "NONE"}
 dependencies = [
-    "django==5.1.*",
-    "black==25.*",
+    "django==6.*",
+    "black==26.*",
     "django-cors-headers==4.*",
-    "django-debug-toolbar==5.*",
+    "django-debug-toolbar==6.*",
     "django-filebrowser-no-grappelli==4.0.*",
-    "django-tinymce==4.1.*",
+    "django-tinymce==5.*",
     "djlint==1.36.*",
-    "isort==6.*",
-    "pillow==11.*",
-    "pipdeptree==2.*",
-    "pytest-django==4.9.*",
-    "pytz==2025.*",
-    "ruff==0.9.*",
+    "isort==8.*",
+    "pillow==12.*",
+    "pytest-django==4.*",
+    "pytz==2026.*",
+    "ruff==0.*",
     "python-telegram-bot==22.*",
+    "gunicorn==25.*",
 ]
-requires-python = ">=3.11"
+requires-python = "==3.14.*"
