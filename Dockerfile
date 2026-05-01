@@ -1,5 +1,5 @@
 # inspired by: https://snyk.io/blog/best-practices-containerizing-python-docker/
-FROM python:3.14 AS base
+FROM python:3.14-alpine AS alpine-base
 
 # workdir related stuff stuff
 WORKDIR /django
@@ -31,7 +31,7 @@ RUN apk add --no-cache \
 # copy files
 RUN mkdir /django && chown python:python /django
 WORKDIR /django
-COPY --from=base /django/.venv /django/.venv
+COPY --from=alpine-base /django/.venv /django/.venv
 RUN chown -R root:root /django/.venv && chmod -R a+rX /django/.venv
 COPY --chown=python:python config /django/config
 COPY --chown=python:python apps /django/apps
@@ -45,6 +45,10 @@ RUN mkdir -p /django/tmp && chown python:python /django/tmp
 
 # make commands available
 ENV PATH="/django/.venv/bin:$PATH"
+
+# Ensure containerized management commands (migrate/collectstatic) use the same
+# settings as Gunicorn.
+ENV DJANGO_SETTINGS_MODULE="config.settings.production"
 
 # change to nonroot user
 USER 999
