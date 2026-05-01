@@ -4,7 +4,19 @@ set -euo pipefail
 DATA_DIR="${DATA_DIR:-/home/goals.danielmoessner.de/tmp}"
 APACHE_SITE_PATH="${APACHE_SITE_PATH:-/etc/apache2/sites-available/goals.danielmoessner.de.conf}"
 
-export GOALS_IMAGE="${GOALS_IMAGE:-ghcr.io/danielmoessner/goals.danielmoessner.de:latest}"
+if [ -z "${GOALS_IMAGE:-}" ]; then
+	echo "ERROR: GOALS_IMAGE is required (deploy immutable tags)." >&2
+	echo "Example: GOALS_IMAGE=ghcr.io/danielmoessner/goals.danielmoessner.de:sha-<gitsha>" >&2
+	exit 1
+fi
+
+if [ "${ALLOW_MUTABLE_IMAGE:-0}" != "1" ] && [[ "$GOALS_IMAGE" == *:latest ]]; then
+	echo "ERROR: refusing to deploy mutable tag ':latest'." >&2
+	echo "Set GOALS_IMAGE to an immutable tag (sha-... or a release tag), or set ALLOW_MUTABLE_IMAGE=1." >&2
+	exit 1
+fi
+
+export GOALS_IMAGE
 
 if [ "$(id -u)" -ne 0 ]; then
 	echo "ERROR: must be run as root (needs chown + systemctl + apache reload)." >&2
