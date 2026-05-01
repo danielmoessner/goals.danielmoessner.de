@@ -12,13 +12,21 @@ COPY --from=ghcr.io/astral-sh/uv:latest /uv /uvx /bin/
 RUN uv sync --locked --no-dev
 
 # build image
-FROM python:3.14-slim AS build
+FROM python:3.14-alpine AS build
 
 # least privilege user (with a real home directory for runtime caches)
-RUN groupadd -g 999 python && useradd -m -d /home/python -u 999 -g python python
+RUN addgroup -S python \
+	&& adduser -S -D -u 999 -G python -h /home/python python \
+	&& mkdir -p /home/python \
+	&& chown -R python:python /home/python
 
-# pillow runtime dependencies
-RUN apt-get update && apt-get install -y --no-install-recommends libopenjp2-7 libtiff6 libxcb1
+# Pillow runtime dependencies
+RUN apk add --no-cache \
+	libjpeg-turbo \
+	zlib \
+	openjpeg \
+	tiff \
+	libxcb
 
 # copy files
 RUN mkdir /django && chown python:python /django
