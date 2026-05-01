@@ -9,7 +9,7 @@ ENV PATH="/django/.venv/bin:$PATH"
 COPY pyproject.toml /django/pyproject.toml
 COPY uv.lock /django/uv.lock
 COPY --from=ghcr.io/astral-sh/uv:latest /uv /uvx /bin/
-RUN uv sync
+RUN uv sync --locked --no-dev
 
 # build image
 FROM python:3.14-slim AS build

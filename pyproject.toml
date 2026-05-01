@@ -8,6 +8,12 @@ line-length = 88
 known_local_folder = ["apps", "config"]
 profile = "black"
 
+[tool.uv]
+# Keep local development experience the same as before: `uv sync` installs dev
+# tooling (ruff/black/isort/pytest, etc.). Production builds should use
+# `uv sync --no-dev`.
+default-groups = ["dev"]
+
 [project]
 name = "goals.danielmoessner.de"
 version = "0.0.0"
@@ -19,18 +25,22 @@ readme = "README.md"
 license = {text = "NONE"}
 dependencies = [
     "django==6.*",
-    "black==26.*",
     "django-cors-headers==4.*",
-    "django-debug-toolbar==6.*",
     "django-filebrowser-no-grappelli==4.0.*",
     "django-tinymce==5.*",
-    "djlint==1.36.*",
-    "isort==8.*",
     "pillow==12.*",
-    "pytest-django==4.*",
     "pytz==2026.*",
-    "ruff==0.*",
     "python-telegram-bot==22.*",
     "gunicorn==25.*",
 ]
 requires-python = "==3.14.*"
+
+[dependency-groups]
+dev = [
+    "black==26.*",
+    "djlint==1.36.*",
+    "isort==8.*",
+    "ruff==0.*",
+    "pytest-django==4.*",
+    "django-debug-toolbar==6.*",
+]
