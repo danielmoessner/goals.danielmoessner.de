@@ -32,6 +32,7 @@ dependencies = [
     "pytz==2026.*",
     "python-telegram-bot==22.*",
     "gunicorn==25.*",
+    "django-debug-toolbar==6.*",
 ]
 requires-python = "==3.14.*"
 
@@ -42,5 +43,4 @@ dev = [
     "isort==8.*",
     "ruff==0.*",
     "pytest-django==4.*",
-    "django-debug-toolbar==6.*",
 ]
