@@ -12,7 +12,13 @@ class CreateUpload(FormClass, OptsUserInstance[Upload], forms.ModelForm):
 
     class Meta:
         model = Upload
-        fields = ["title", "file"]
+        fields = ["file", "title"]
+
+    @property
+    def media(self):
+        return super().media + forms.Media(
+            js=["create_upload.js"],
+        )
 
     def ok(self):
         self.instance.user = self.user
