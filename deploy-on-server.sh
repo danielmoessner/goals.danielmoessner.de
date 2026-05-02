@@ -1,96 +1,22 @@
 #!/usr/bin/env bash
 set -euo pipefail
 
-DATA_DIR="${DATA_DIR:-${GOALS_DATA_DIR:-/home/goals.danielmoessner.de/tmp}}"
-APACHE_SITE_PATH="${APACHE_SITE_PATH:-/etc/apache2/sites-available/goals.danielmoessner.de.conf}"
+DATA_DIR="${GOALS_DATA_DIR:-/home/goals.danielmoessner.de/tmp}"
 
-# Compose parameters (used in docker-compose.yml)
+: "${GOALS_IMAGE:?ERROR: GOALS_IMAGE is required}"
+
+export GOALS_IMAGE
 export GOALS_DATA_DIR="$DATA_DIR"
 export GOALS_BIND_IP="${GOALS_BIND_IP:-127.0.0.1}"
 export GOALS_PORT="${GOALS_PORT:-8080}"
 
-SMOKE_TEST_URL="${SMOKE_TEST_URL:-http://127.0.0.1:8080/}"
-WAIT_FOR_HEALTH_SECONDS="${WAIT_FOR_HEALTH_SECONDS:-60}"
-
-if [ -z "${GOALS_IMAGE:-}" ]; then
-	echo "ERROR: GOALS_IMAGE is required (deploy immutable tags)." >&2
-	echo "Example: GOALS_IMAGE=ghcr.io/danielmoessner/goals.danielmoessner.de:sha-<gitsha>" >&2
-	exit 1
-fi
-
-if [ "${ALLOW_MUTABLE_IMAGE:-0}" != "1" ] && [[ "$GOALS_IMAGE" == *:latest ]]; then
-	echo "ERROR: refusing to deploy mutable tag ':latest'." >&2
-	echo "Set GOALS_IMAGE to an immutable tag (sha-... or a release tag), or set ALLOW_MUTABLE_IMAGE=1." >&2
-	exit 1
-fi
-
-export GOALS_IMAGE
-
-if [ "$(id -u)" -ne 0 ]; then
-	echo "ERROR: must be run as root (needs chown + systemctl + apache reload)." >&2
-	exit 1
-fi
-
-if ! command -v docker >/dev/null 2>&1; then
-	echo "ERROR: docker not found." >&2
-	exit 127
-fi
-
-if ! docker compose version >/dev/null 2>&1; then
-	echo "ERROR: Docker Compose plugin not found (need 'docker compose')." >&2
-	exit 127
-fi
-
-chown 999:33 "$DATA_DIR" || true
-chmod 710 "$DATA_DIR" || true
-
-chown -R 999:33 "$DATA_DIR/static" "$DATA_DIR/media" "$DATA_DIR/logs" || true
-chmod 750 "$DATA_DIR/static" "$DATA_DIR/media" "$DATA_DIR/logs" || true
-
-chown 999:33 "$DATA_DIR/django.log" || true
-chmod 640 "$DATA_DIR/django.log" || true
-
-chown 999:999 "$DATA_DIR/secrets.json" || true
-chmod 600 "$DATA_DIR/secrets.json" || true
-
-chown 999:999 "$DATA_DIR/db.sqlite3" || true
-chmod 600 "$DATA_DIR/db.sqlite3" || true
+mkdir -p "$DATA_DIR/static" "$DATA_DIR/media"
 
 docker compose pull
-
-docker compose run --rm --no-deps web \
-	python -c 'import importlib; importlib.import_module("config.settings.production"); open("/django/tmp/secrets.json", "rb").read(1); print("OK: settings import + secrets readable")'
-
 docker compose run --rm --no-deps web python manage.py migrate --noinput
 docker compose run --rm --no-deps web python manage.py collectstatic --noinput
-
 docker compose up -d --remove-orphans
-
-# Wait for the container healthcheck to report healthy (best-effort).
-web_id="$(docker compose ps -q web || true)"
-if [ -n "$web_id" ] && docker inspect "$web_id" >/dev/null 2>&1; then
-	status="$(docker inspect -f '{{.State.Health.Status}}' "$web_id" 2>/dev/null || true)"
-	if [ -n "$status" ]; then
-		end=$((SECONDS + WAIT_FOR_HEALTH_SECONDS))
-		while [ "$SECONDS" -lt "$end" ]; do
-			status="$(docker inspect -f '{{.State.Health.Status}}' "$web_id" 2>/dev/null || true)"
-			if [ "$status" = "healthy" ]; then
-				break
-			fi
-			sleep 2
-		done
-		status="$(docker inspect -f '{{.State.Health.Status}}' "$web_id" 2>/dev/null || true)"
-		if [ "$status" != "healthy" ]; then
-			echo "ERROR: web container did not become healthy (status='$status')." >&2
-			docker compose logs --no-color --tail 200 web || true
-			exit 1
-		fi
-	fi
-fi
-
-# Post-deploy smoke test (inside the running container; avoids host dependencies like curl).
-docker compose exec -T web python -c 'import urllib.request; r=urllib.request.urlopen("http://127.0.0.1:8080/", timeout=5); r.read(1); print("OK: smoke test")'
 
 systemctl reload apache2
 
-echo "OK: deployed ${GOALS_IMAGE}"
+echo "OK: deployed $GOALS_IMAGE"

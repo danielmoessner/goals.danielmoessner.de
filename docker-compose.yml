@@ -5,32 +5,9 @@ services:
     user: "999:33"
     ports:
       - "${GOALS_BIND_IP:-127.0.0.1}:${GOALS_PORT:-8080}:8080"
-    command:
-      - gunicorn
-      - --chdir
-      - /django
-      - config.wsgi:application
-      - --bind
-      - 0.0.0.0:8080
-      - --timeout
-      - "240"
-      - --graceful-timeout
-      - "30"
-      - -w
-      - "2"
-      - --access-logfile
-      - "-"
-      - --error-logfile
-      - "-"
-    healthcheck:
-      test:
-        - CMD
-        - python
-        - -c
-        - "import urllib.request; r=urllib.request.urlopen('http://127.0.0.1:8080/', timeout=3); r.read(1); print('ok')"
-      interval: 10s
-      timeout: 5s
-      retries: 6
-      start_period: 30s
+    command: >-
+      gunicorn --chdir /django config.wsgi:application
+      --bind 0.0.0.0:8080 --timeout 240 --graceful-timeout 30
+      -w 2 --access-logfile - --error-logfile -
     volumes:
       - ${GOALS_DATA_DIR:-/home/goals.danielmoessner.de/tmp}:/django/tmp

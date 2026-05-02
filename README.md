@@ -136,7 +136,7 @@ Run:
 
 - compute the current git SHA (`git rev-parse HEAD`)
 - use `GOALS_IMAGE=ghcr.io/<owner>/<repo>:sha-<longsha>`
-- copy `docker-compose.yml`, `apache.conf`, and `deploy-on-server.sh` to the server
+- copy `docker-compose.yml` and `deploy-on-server.sh` to the server
 - run `deploy-on-server.sh` on the server (as root)
 
 Useful overrides:
@@ -163,8 +163,7 @@ The workflow `.github/workflows/docker-image.yml` contains a `deploy` job that c
 
 To enable it, add these GitHub Actions secrets:
 
-- `DEPLOY_HOST` (e.g. `46.101.136.214`)
-- `DEPLOY_USER` (e.g. `root`)
+- `DEPLOY_SSH_HOST` (e.g. `root@46.101.136.214`)
 - `DEPLOY_REMOTE_DIR` (e.g. `/home/goals.danielmoessner.de`)
 - `DEPLOY_SSH_PRIVATE_KEY` (an SSH private key with access to the server)
 

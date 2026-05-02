@@ -1,4 +1,4 @@
-name: Build & Push Docker Image
+name: Deployment Stage
 
 on:
   push:
@@ -66,20 +66,14 @@ jobs:
           mkdir -p ~/.ssh
           echo "${{ secrets.DEPLOY_SSH_PRIVATE_KEY }}" > ~/.ssh/id_ed25519
           chmod 600 ~/.ssh/id_ed25519
-
-          # Recommended: set DEPLOY_KNOWN_HOSTS to pin host keys.
-          if [ -n "${{ secrets.DEPLOY_KNOWN_HOSTS }}" ]; then
-            echo "${{ secrets.DEPLOY_KNOWN_HOSTS }}" >> ~/.ssh/known_hosts
-          else
-            ssh-keyscan -H "${{ secrets.DEPLOY_HOST }}" >> ~/.ssh/known_hosts
-          fi
+          echo "${{ secrets.DEPLOY_KNOWN_HOSTS }}" >> ~/.ssh/known_hosts
 
       - name: Deploy
         shell: bash
         env:
           HOST: ${{ secrets.DEPLOY_USER }}@${{ secrets.DEPLOY_HOST }}
+          REMOTE_DIR: ${{ secrets.DEPLOY_REMOTE_DIR }}
           IMAGE_REPO: ghcr.io/${{ github.repository }}
-          WAIT_FOR_IMAGE_SECONDS: "60"
         run: |
           set -euo pipefail
           ./call-deploy.sh
