@@ -61,6 +61,18 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v6
 
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Install Ansible
+        shell: bash
+        run: |
+          set -euo pipefail
+          python -m pip install --upgrade pip
+          python -m pip install "ansible-core==2.20.*"
+
       - name: Set up SSH
         shell: bash
         run: |
@@ -70,12 +82,23 @@ jobs:
           chmod 600 ~/.ssh/id_ed25519
           echo "${{ secrets.DEPLOY_KNOWN_HOSTS }}" >> ~/.ssh/known_hosts
 
-      - name: Deploy
+      - name: Write Ansible inventory
         shell: bash
-        env:
-          HOST: ${{ secrets.DEPLOY_USER }}@${{ secrets.DEPLOY_HOST }}
-          REMOTE_DIR: ${{ secrets.DEPLOY_REMOTE_DIR }}
-          IMAGE_REPO: ghcr.io/${{ github.repository }}
         run: |
           set -euo pipefail
-          ./call-deploy.sh
+          cat > inventory.ini <<EOF
+          [goals]
+          goals-prod ansible_host=${{ secrets.DEPLOY_HOST }} ansible_user=${{ secrets.DEPLOY_USER }}
+          EOF
+
+      - name: Deploy (Ansible)
+        shell: bash
+        run: |
+          set -euo pipefail
+          ansible-playbook \
+            -i inventory.ini \
+            --private-key ~/.ssh/id_ed25519 \
+            ansible/deploy.yml \
+            -e "goals_image_repo=ghcr.io/${{ github.repository }}" \
+            -e "goals_remote_dir=${{ secrets.DEPLOY_REMOTE_DIR }}" \
+            -e "goals_data_dir=${{ secrets.DEPLOY_REMOTE_DIR }}/tmp"

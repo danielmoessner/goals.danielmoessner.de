@@ -1,0 +1,231 @@
+---
+- name: Provision (Debian + Nginx + Docker)
+  hosts: goals
+  become: true
+
+  vars:
+    nginx_site_available: "/etc/nginx/sites-available/{{ goals_nginx_site_name }}"
+    nginx_site_enabled: "/etc/nginx/sites-enabled/{{ goals_nginx_site_name }}"
+
+  handlers:
+    - name: Test nginx config
+      command: nginx -t
+
+    - name: Restart nginx
+      service:
+        name: nginx
+        state: restarted
+
+  tasks:
+    - name: Install required packages
+      apt:
+        update_cache: true
+        name:
+          - ca-certificates
+          - curl
+          - rsync
+          - nginx
+          - certbot
+        state: present
+
+    - name: Set up Docker apt repository (keyrings dir)
+      file:
+        path: /etc/apt/keyrings
+        state: directory
+        owner: root
+        group: root
+        mode: "0755"
+
+    - name: Set up Docker apt repository (GPG key)
+      get_url:
+        url: https://download.docker.com/linux/debian/gpg
+        dest: /etc/apt/keyrings/docker.asc
+        owner: root
+        group: root
+        mode: "0644"
+
+    - name: Determine dpkg architecture
+      command: dpkg --print-architecture
+      register: dpkg_arch
+      changed_when: false
+
+    - name: Set up Docker apt repository (deb822 source)
+      copy:
+        dest: /etc/apt/sources.list.d/docker.sources
+        owner: root
+        group: root
+        mode: "0644"
+        content: |
+          Types: deb
+          URIs: https://download.docker.com/linux/debian
+          Suites: {{ ansible_distribution_release }}
+          Components: stable
+          Architectures: {{ dpkg_arch.stdout }}
+          Signed-By: /etc/apt/keyrings/docker.asc
+      register: docker_sources
+
+    - name: Update apt cache after adding Docker repo
+      apt:
+        update_cache: true
+      when: docker_sources.changed
+
+    - name: Remove distro Docker packages (avoid conflicts)
+      apt:
+        name:
+          - docker.io
+          - docker-compose
+          - docker-compose-plugin
+          - podman-docker
+        state: absent
+      failed_when: false
+
+    - name: Install Docker Engine (official repo)
+      apt:
+        name:
+          - docker-ce
+          - docker-ce-cli
+          - containerd.io
+          - docker-buildx-plugin
+          - docker-compose-plugin
+        state: present
+
+    - name: Ensure Docker is enabled + running
+      service:
+        name: docker
+        enabled: true
+        state: started
+
+    - name: Gather service facts
+      service_facts:
+
+    - name: Stop and disable Apache (take over :80)
+      service:
+        name: apache2
+        enabled: false
+        state: stopped
+      when: goals_disable_apache | default(false) | bool
+      failed_when: false
+
+    - name: Ensure project directory exists
+      file:
+        path: "{{ goals_remote_dir }}"
+        state: directory
+        owner: root
+        group: root
+        mode: "0755"
+
+    - name: Ensure data directories exist (group-writable for www-data / GID 33)
+      file:
+        path: "{{ item }}"
+        state: directory
+        owner: root
+        group: www-data
+        mode: "2770"
+      loop:
+        - "{{ goals_data_dir }}"
+        - "{{ goals_data_dir }}/static"
+        - "{{ goals_data_dir }}/media"
+
+    - name: Ensure certbot webroot exists
+      file:
+        path: "{{ goals_certbot_webroot }}"
+        state: directory
+        owner: root
+        group: root
+        mode: "0755"
+
+    - name: Install docker-compose.yml
+      copy:
+        src: "{{ playbook_dir }}/../docker-compose.yml"
+        dest: "{{ goals_remote_dir }}/docker-compose.yml"
+        owner: root
+        group: root
+        mode: "0644"
+
+    - name: Configure Nginx site
+      template:
+        src: "{{ playbook_dir }}/templates/nginx-goals.conf.j2"
+        dest: "{{ nginx_site_available }}"
+        owner: root
+        group: root
+        mode: "0644"
+      notify:
+        - Test nginx config
+        - Restart nginx
+
+    - name: Enable Nginx site
+      file:
+        src: "{{ nginx_site_available }}"
+        dest: "{{ nginx_site_enabled }}"
+        state: link
+      notify:
+        - Test nginx config
+        - Restart nginx
+
+    - name: Flush handlers (apply Nginx config)
+      meta: flush_handlers
+
+    - name: Ensure Nginx is enabled + running
+      service:
+        name: nginx
+        enabled: true
+        state: started
+
+    - name: Obtain/renew Let's Encrypt certificate (HTTP-01 via webroot)
+      command: >-
+        certbot certonly --webroot -w {{ goals_certbot_webroot }}
+        --agree-tos --non-interactive
+        --register-unsafely-without-email
+        --keep-until-expiring
+        -d {{ goals_server_name }}
+        {% for alias in goals_server_aliases | default([]) %}-d {{ alias }} {% endfor %}
+      register: certbot_result
+      changed_when: "'Congratulations!' in (certbot_result.stdout | default(''))"
+      when: goals_enable_https | default(false) | bool
+
+    - name: Check Let's Encrypt certificate exists
+      stat:
+        path: "/etc/letsencrypt/live/{{ goals_server_name }}/fullchain.pem"
+      register: le_cert
+      when: goals_enable_https | default(false) | bool
+
+    - name: Fail if certificate is missing after certbot
+      fail:
+        msg: "Expected /etc/letsencrypt/live/{{ goals_server_name }}/fullchain.pem to exist, but it does not. Ensure DNS for {{ goals_server_name }} points to this server and port 80 is reachable."
+      when:
+        - goals_enable_https | default(false) | bool
+        - not le_cert.stat.exists
+
+    - name: Configure Nginx HTTPS site
+      template:
+        src: "{{ playbook_dir }}/templates/nginx-goals-https.conf.j2"
+        dest: "{{ nginx_site_available }}"
+        owner: root
+        group: root
+        mode: "0644"
+      notify:
+        - Test nginx config
+        - Restart nginx
+      when:
+        - goals_enable_https | default(false) | bool
+        - le_cert.stat.exists
+
+    - name: Flush handlers (enable HTTPS config)
+      meta: flush_handlers
+      when:
+        - goals_enable_https | default(false) | bool
+        - le_cert.stat.exists
+
+    - name: Ensure certbot renewal timer is enabled (if available)
+      service:
+        name: certbot.timer
+        enabled: true
+        state: started
+      failed_when: false
+      when: goals_enable_https | default(false) | bool
+
+    - name: Manual step reminder
+      debug:
+        msg:
+          - "Then deploy with: ansible-playbook ansible/deploy.yml (or pass -e goals_image=...)"
+          - "HTTPS: re-run provisioning with -e goals_enable_https=true after DNS cutover."

@@ -1,0 +1,11 @@
+---
+# One-shot bootstrap for a new server:
+# 1) provision Debian (Nginx + Docker)
+# 2) migrate tmp/ from old -> new (secrets.json stays manual)
+# 3) deploy the current image
+#
+# Requires an inventory containing both `goals_old` (old) and `goals` (new).
+
+- import_playbook: provision.yml
+- import_playbook: migrate.yml
+- import_playbook: deploy.yml

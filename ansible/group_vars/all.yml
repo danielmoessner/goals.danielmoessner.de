@@ -1,0 +1,34 @@
+# Defaults for provisioning + deploy.
+# Override in inventory host vars or via `-e` as needed.
+
+goals_remote_dir: /home/goals.danielmoessner.de
+
+goals_data_dir: /home/goals.danielmoessner.de/tmp
+
+goals_bind_ip: 127.0.0.1
+
+goals_port: 8080
+
+goals_server_name: goals.danielmoessner.de
+
+# Used for log file names + nginx site filename.
+goals_nginx_site_name: goals.danielmoessner.de
+
+# Nginx defaults to 1m which may break uploads.
+goals_client_max_body_size: 50m
+
+# If true, provisioning will stop/disable apache2 to free up port 80 for Nginx.
+# Keep false by default to avoid accidental downtime on existing Apache-based servers.
+goals_disable_apache: false
+
+# HTTPS (Let's Encrypt via certbot). Typically you provision + deploy first (by IP),
+# switch DNS A records, then re-run provisioning with HTTPS enabled.
+goals_enable_https: true
+
+# Additional server names (e.g. "www.") to include in the certificate and Nginx config.
+goals_server_aliases: []
+
+goals_certbot_webroot: /var/www/certbot
+
+# Default image repo; `deploy.yml` will deploy `sha-<current git sha>` unless you pass `-e goals_image=...`.
+goals_image_repo: ghcr.io/danielmoessner/goals.danielmoessner.de

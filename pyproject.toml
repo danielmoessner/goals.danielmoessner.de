@@ -43,4 +43,5 @@ dev = [
     "isort==8.*",
     "ruff==0.*",
     "pytest-django==4.*",
+    "ansible==13.*",
 ]
