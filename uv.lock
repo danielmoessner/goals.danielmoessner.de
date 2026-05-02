@@ -337,7 +337,7 @@ requires-dist = [
 
 [package.metadata.requires-dev]
 dev = [
-    { name = "ansible", specifier = ">=13.6.0" },
+    { name = "ansible", specifier = "==13.*" },
     { name = "black", specifier = "==26.*" },
     { name = "djlint", specifier = "==1.36.*" },
     { name = "isort", specifier = "==8.*" },
