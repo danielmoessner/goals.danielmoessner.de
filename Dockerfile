@@ -55,4 +55,4 @@ USER 999
 
 # run
 EXPOSE 8080
-CMD ["gunicorn", "--chdir", "/django", "config.wsgi:application", "--bind", "0.0.0.0:8080", "--timeout", "240", "-w", "2"]
+CMD ["gunicorn", "--chdir", "/django", "config.wsgi:application", "--bind", "0.0.0.0:8080", "--timeout", "240", "--graceful-timeout", "30", "-w", "2", "--access-logfile", "-", "--error-logfile", "-"]

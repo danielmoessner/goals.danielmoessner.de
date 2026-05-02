@@ -1,8 +1,16 @@
 #!/usr/bin/env bash
 set -euo pipefail
 
-DATA_DIR="${DATA_DIR:-/home/goals.danielmoessner.de/tmp}"
+DATA_DIR="${DATA_DIR:-${GOALS_DATA_DIR:-/home/goals.danielmoessner.de/tmp}}"
 APACHE_SITE_PATH="${APACHE_SITE_PATH:-/etc/apache2/sites-available/goals.danielmoessner.de.conf}"
+
+# Compose parameters (used in docker-compose.yml)
+export GOALS_DATA_DIR="$DATA_DIR"
+export GOALS_BIND_IP="${GOALS_BIND_IP:-127.0.0.1}"
+export GOALS_PORT="${GOALS_PORT:-8080}"
+
+SMOKE_TEST_URL="${SMOKE_TEST_URL:-http://127.0.0.1:8080/}"
+WAIT_FOR_HEALTH_SECONDS="${WAIT_FOR_HEALTH_SECONDS:-60}"
 
 if [ -z "${GOALS_IMAGE:-}" ]; then
 	echo "ERROR: GOALS_IMAGE is required (deploy immutable tags)." >&2
@@ -57,6 +65,31 @@ docker compose run --rm --no-deps web python manage.py migrate --noinput
 docker compose run --rm --no-deps web python manage.py collectstatic --noinput
 
 docker compose up -d --remove-orphans
+
+# Wait for the container healthcheck to report healthy (best-effort).
+web_id="$(docker compose ps -q web || true)"
+if [ -n "$web_id" ] && docker inspect "$web_id" >/dev/null 2>&1; then
+	status="$(docker inspect -f '{{.State.Health.Status}}' "$web_id" 2>/dev/null || true)"
+	if [ -n "$status" ]; then
+		end=$((SECONDS + WAIT_FOR_HEALTH_SECONDS))
+		while [ "$SECONDS" -lt "$end" ]; do
+			status="$(docker inspect -f '{{.State.Health.Status}}' "$web_id" 2>/dev/null || true)"
+			if [ "$status" = "healthy" ]; then
+				break
+			fi
+			sleep 2
+		done
+		status="$(docker inspect -f '{{.State.Health.Status}}' "$web_id" 2>/dev/null || true)"
+		if [ "$status" != "healthy" ]; then
+			echo "ERROR: web container did not become healthy (status='$status')." >&2
+			docker compose logs --no-color --tail 200 web || true
+			exit 1
+		fi
+	fi
+fi
+
+# Post-deploy smoke test (inside the running container; avoids host dependencies like curl).
+docker compose exec -T web python -c 'import urllib.request; r=urllib.request.urlopen("http://127.0.0.1:8080/", timeout=5); r.read(1); print("OK: smoke test")'
 
 systemctl reload apache2
 
