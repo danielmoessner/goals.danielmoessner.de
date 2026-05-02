@@ -66,6 +66,7 @@ TEMPLATES = [
                 "django.template.context_processors.request",
                 "django.contrib.auth.context_processors.auth",
                 "django.contrib.messages.context_processors.messages",
+                "config.context_processors.build_info",
             ],
         },
     },
@@ -163,3 +164,5 @@ CUSTOM_ALLOW_REGISTRATION = True
 SESSION_COOKIE_AGE = 60 * 60 * 24 * 365  # 1 year
 
 TELEGRAM_BOT_TOKEN = get_secret("TELEGRAM_BOT_TOKEN")
+
+IMAGE_VERSION = os.getenv("IMAGE_VERSION", "unknown")

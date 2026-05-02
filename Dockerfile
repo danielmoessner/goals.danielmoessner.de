@@ -50,6 +50,10 @@ ENV PATH="/django/.venv/bin:$PATH"
 # settings as Gunicorn.
 ENV DJANGO_SETTINGS_MODULE="config.settings.production"
 
+# GitHub commit SHA / image version (provided by CI as a build-arg).
+ARG IMAGE_VERSION=unknown
+ENV IMAGE_VERSION="${IMAGE_VERSION}"
+
 # change to nonroot user
 USER 999
 
