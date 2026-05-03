@@ -1,12 +1,12 @@
 ---
 - name: Provision (Debian + Nginx + Docker)
-  hosts: goals
+  hosts: app
   become: true
 
   vars:
-    nginx_site_available: "/etc/nginx/sites-available/{{ goals_nginx_site_name }}"
-    nginx_site_enabled: "/etc/nginx/sites-enabled/{{ goals_nginx_site_name }}"
-    le_fullchain: "/etc/letsencrypt/live/{{ goals_server_name }}/fullchain.pem"
+    nginx_site_available: "/etc/nginx/sites-available/{{ app_nginx_site_name }}"
+    nginx_site_enabled: "/etc/nginx/sites-enabled/{{ app_nginx_site_name }}"
+    le_fullchain: "/etc/letsencrypt/live/{{ app_domain }}/fullchain.pem"
 
   handlers:
     - name: Test nginx config
@@ -99,7 +99,7 @@
 
     - name: Ensure project directory exists
       file:
-        path: "{{ goals_remote_dir }}"
+        path: "{{ app_remote_dir }}"
         state: directory
         owner: root
         group: root
@@ -113,13 +113,13 @@
         group: www-data
         mode: "2770"
       loop:
-        - "{{ goals_data_dir }}"
-        - "{{ goals_data_dir }}/static"
-        - "{{ goals_data_dir }}/media"
+        - "{{ app_data_dir }}"
+        - "{{ app_data_dir }}/static"
+        - "{{ app_data_dir }}/media"
 
     - name: Ensure certbot webroot exists
       file:
-        path: "{{ goals_certbot_webroot }}"
+        path: "{{ app_certbot_webroot }}"
         state: directory
         owner: root
         group: root
@@ -128,32 +128,10 @@
     - name: Install docker-compose.yml
       copy:
         src: "{{ playbook_dir }}/../docker-compose.yml"
-        dest: "{{ goals_remote_dir }}/docker-compose.yml"
+        dest: "{{ app_remote_dir }}/docker-compose.yml"
         owner: root
         group: root
         mode: "0644"
-
-    - name: Configure goals Nginx site (domain HTTP + optional HTTPS)
-      template:
-        src: "{{ playbook_dir }}/templates/nginx-goals-https.conf.j2"
-        dest: "{{ nginx_site_available }}"
-        owner: root
-        group: root
-        mode: "0644"
-      vars:
-        goals_tls_enabled: false
-      notify:
-        - Test nginx config
-        - Restart nginx
-
-    - name: Enable goals Nginx site
-      file:
-        src: "{{ nginx_site_available }}"
-        dest: "{{ nginx_site_enabled }}"
-        state: link
-      notify:
-        - Test nginx config
-        - Restart nginx
 
     - name: Configure Debian default Nginx site (serve server IP over HTTP+HTTPS)
       template:
@@ -188,54 +166,57 @@
       stat:
         path: "{{ le_fullchain }}"
       register: le_cert
-      when: goals_enable_https | default(false) | bool
 
     - name: Obtain Let's Encrypt certificate (HTTP-01 via webroot)
       command: >-
-        certbot certonly --webroot -w {{ goals_certbot_webroot }}
+        certbot certonly --webroot -w {{ app_certbot_webroot }}
         --agree-tos --non-interactive
         --register-unsafely-without-email
         --keep-until-expiring
-        -d {{ goals_server_name }}
-        {% for alias in goals_server_aliases | default([]) %}-d {{ alias }} {% endfor %}
+        -d {{ app_domain }}
+        {% for alias in app_domain_aliases | default([]) %}-d {{ alias }} {% endfor %}
       register: certbot_result
       changed_when: "'Congratulations!' in (certbot_result.stdout | default(''))"
-      when: goals_enable_https | default(false) | bool and not le_cert.stat.exists
+      when: not le_cert.stat.exists
 
     - name: Re-check Let's Encrypt certificate exists
       stat:
         path: "{{ le_fullchain }}"
       register: le_cert_after
-      when: goals_enable_https | default(false) | bool
 
     - name: Fail if certificate is missing after certbot
       fail:
-        msg: "Expected {{ le_fullchain }} to exist, but it does not. Ensure DNS for {{ goals_server_name }} points to this server and port 80 is reachable."
+        msg: "Expected {{ le_fullchain }} to exist, but it does not. Ensure DNS for {{ app_domain }} points to this server and port 80 is reachable."
       when:
-        - goals_enable_https | default(false) | bool
         - not le_cert_after.stat.exists
 
-    - name: Enable TLS in goals Nginx site
+    - name: Configure app Nginx site (HTTPS)
       template:
-        src: "{{ playbook_dir }}/templates/nginx-goals-https.conf.j2"
+        src: "{{ playbook_dir }}/templates/nginx-app-https.conf.j2"
         dest: "{{ nginx_site_available }}"
         owner: root
         group: root
         mode: "0644"
-      vars:
-        goals_tls_enabled: true
       notify:
         - Test nginx config
         - Restart nginx
       when:
-        - goals_enable_https | default(false) | bool
+        - le_cert_after.stat.exists
+
+    - name: Enable app Nginx site
+      file:
+        src: "{{ nginx_site_available }}"
+        dest: "{{ nginx_site_enabled }}"
+        state: link
+      notify:
+        - Test nginx config
+        - Restart nginx
+      when:
         - le_cert_after.stat.exists
 
     - name: Flush handlers (apply TLS vhost)
       meta: flush_handlers
-      when:
-        - goals_enable_https | default(false) | bool
-        - le_cert_after.stat.exists
+      when: le_cert_after.stat.exists
 
     - name: Ensure certbot renewal timer is enabled (if available)
       service:
@@ -243,10 +224,9 @@
         enabled: true
         state: started
       failed_when: false
-      when: goals_enable_https | default(false) | bool
 
     - name: Manual step reminder
       debug:
         msg:
-          - "Then deploy with: ansible-playbook ansible/deploy.yml (or pass -e goals_image=...)"
-          - "If goals_enable_https=true, certbot uses --register-unsafely-without-email."
+          - "Then deploy with: ansible-playbook ansible/deploy.yml (or pass -e app_image=...)"
+          - "Certbot uses --register-unsafely-without-email."

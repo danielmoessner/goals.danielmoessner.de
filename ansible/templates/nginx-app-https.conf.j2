@@ -1,0 +1,51 @@
+server {
+    listen 80;
+    listen [::]:80;
+    server_name {{ app_domain }}{% for alias in app_domain_aliases | default([]) %} {{ alias }}{% endfor %};
+
+    # Let's Encrypt HTTP-01 challenge (certbot --webroot)
+    location /.well-known/acme-challenge/ {
+        root {{ app_certbot_webroot }};
+        try_files $uri =404;
+    }
+
+    location / {
+        return 301 https://$host$request_uri;
+    }
+}
+
+server {
+    listen 443 ssl http2;
+    listen [::]:443 ssl http2;
+    server_name {{ app_domain }}{% for alias in app_domain_aliases | default([]) %} {{ alias }}{% endfor %};
+
+    client_max_body_size {{ app_client_max_body_size }};
+
+    access_log /var/log/nginx/{{ app_nginx_site_name }}.access.log;
+    error_log /var/log/nginx/{{ app_nginx_site_name }}.error.log;
+
+    ssl_certificate /etc/letsencrypt/live/{{ app_domain }}/fullchain.pem;
+    ssl_certificate_key /etc/letsencrypt/live/{{ app_domain }}/privkey.pem;
+
+    ssl_protocols TLSv1.2 TLSv1.3;
+
+    location /static/ {
+        alias {{ app_data_dir }}/static/;
+        access_log off;
+        expires 30d;
+    }
+
+    location /media/ {
+        alias {{ app_data_dir }}/media/;
+    }
+
+    location / {
+        proxy_pass http://{{ app_bind_ip }}:{{ app_port }};
+        proxy_redirect off;
+
+        proxy_set_header Host $host;
+        proxy_set_header X-Real-IP $remote_addr;
+        proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+        proxy_set_header X-Forwarded-Proto $scheme;
+    }
+}

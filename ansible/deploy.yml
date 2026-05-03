@@ -1,25 +1,25 @@
 ---
 - name: Deploy (Docker Compose)
-  hosts: goals
+  hosts: app
   become: true
 
   vars:
-    secrets_path: "{{ goals_data_dir }}/secrets.json"
+    secrets_path: "{{ app_data_dir }}/secrets.json"
 
   tasks:
     - name: Determine image to deploy (explicit)
       set_fact:
-        goals_image_effective: "{{ goals_image }}"
-      when: goals_image is defined and goals_image | length > 0
+        app_image_effective: "{{ app_image }}"
+      when: app_image is defined and app_image | length > 0
 
     - name: Determine image to deploy (default to current git SHA / GITHUB_SHA)
       set_fact:
-        goals_image_effective: "{{ goals_image_repo }}:sha-{{ lookup('env', 'GITHUB_SHA') | default(lookup('pipe', 'git rev-parse HEAD'), true) }}"
-      when: goals_image is not defined or goals_image | length == 0
+        app_image_effective: "{{ app_image_repo }}:sha-{{ lookup('env', 'GITHUB_SHA') | default(lookup('pipe', 'git rev-parse HEAD'), true) }}"
+      when: app_image is not defined or app_image | length == 0
 
     - name: Ensure project directory exists
       file:
-        path: "{{ goals_remote_dir }}"
+        path: "{{ app_remote_dir }}"
         state: directory
         owner: root
         group: root
@@ -33,13 +33,13 @@
         group: www-data
         mode: "2770"
       loop:
-        - "{{ goals_data_dir }}"
-        - "{{ goals_data_dir }}/static"
-        - "{{ goals_data_dir }}/media"
+        - "{{ app_data_dir }}"
+        - "{{ app_data_dir }}/static"
+        - "{{ app_data_dir }}/media"
 
     - name: Ensure tmp dir ownership/permissions (bind mount root)
       file:
-        path: "{{ goals_data_dir }}"
+        path: "{{ app_data_dir }}"
         state: directory
         owner: root
         group: www-data
@@ -53,13 +53,13 @@
         group: www-data
         mode: "0660"
       loop:
-        - "{{ goals_data_dir }}/django.log"
-        - "{{ goals_data_dir }}/db.sqlite3"
+        - "{{ app_data_dir }}/django.log"
+        - "{{ app_data_dir }}/db.sqlite3"
 
     - name: Install docker-compose.yml
       copy:
         src: "{{ playbook_dir }}/../docker-compose.yml"
-        dest: "{{ goals_remote_dir }}/docker-compose.yml"
+        dest: "{{ app_remote_dir }}/docker-compose.yml"
         owner: root
         group: root
         mode: "0644"
@@ -84,52 +84,52 @@
     - name: Verify secrets.json is readable inside the container
       command: docker compose run --rm --no-deps --entrypoint sh web -lc "ls -l /django/tmp/secrets.json && python -c 'import json; json.load(open(\"/django/tmp/secrets.json\"))'"
       args:
-        chdir: "{{ goals_remote_dir }}"
+        chdir: "{{ app_remote_dir }}"
       environment:
-        GOALS_IMAGE: "{{ goals_image_effective }}"
-        GOALS_DATA_DIR: "{{ goals_data_dir }}"
-        GOALS_BIND_IP: "{{ goals_bind_ip }}"
-        GOALS_PORT: "{{ goals_port }}"
+        APP_IMAGE: "{{ app_image_effective }}"
+        APP_DATA_DIR: "{{ app_data_dir }}"
+        APP_BIND_IP: "{{ app_bind_ip }}"
+        APP_PORT: "{{ app_port }}"
 
     - name: Pull image
       command: docker compose pull
       args:
-        chdir: "{{ goals_remote_dir }}"
+        chdir: "{{ app_remote_dir }}"
       environment:
-        GOALS_IMAGE: "{{ goals_image_effective }}"
-        GOALS_DATA_DIR: "{{ goals_data_dir }}"
-        GOALS_BIND_IP: "{{ goals_bind_ip }}"
-        GOALS_PORT: "{{ goals_port }}"
+        APP_IMAGE: "{{ app_image_effective }}"
+        APP_DATA_DIR: "{{ app_data_dir }}"
+        APP_BIND_IP: "{{ app_bind_ip }}"
+        APP_PORT: "{{ app_port }}"
 
     - name: Migrate
       command: docker compose run --rm --no-deps web python manage.py migrate --noinput
       args:
-        chdir: "{{ goals_remote_dir }}"
+        chdir: "{{ app_remote_dir }}"
       environment:
-        GOALS_IMAGE: "{{ goals_image_effective }}"
-        GOALS_DATA_DIR: "{{ goals_data_dir }}"
-        GOALS_BIND_IP: "{{ goals_bind_ip }}"
-        GOALS_PORT: "{{ goals_port }}"
+        APP_IMAGE: "{{ app_image_effective }}"
+        APP_DATA_DIR: "{{ app_data_dir }}"
+        APP_BIND_IP: "{{ app_bind_ip }}"
+        APP_PORT: "{{ app_port }}"
 
     - name: Collect static
       command: docker compose run --rm --no-deps web python manage.py collectstatic --noinput
       args:
-        chdir: "{{ goals_remote_dir }}"
+        chdir: "{{ app_remote_dir }}"
       environment:
-        GOALS_IMAGE: "{{ goals_image_effective }}"
-        GOALS_DATA_DIR: "{{ goals_data_dir }}"
-        GOALS_BIND_IP: "{{ goals_bind_ip }}"
-        GOALS_PORT: "{{ goals_port }}"
+        APP_IMAGE: "{{ app_image_effective }}"
+        APP_DATA_DIR: "{{ app_data_dir }}"
+        APP_BIND_IP: "{{ app_bind_ip }}"
+        APP_PORT: "{{ app_port }}"
 
     - name: Start/update services
       command: docker compose up -d --remove-orphans
       args:
-        chdir: "{{ goals_remote_dir }}"
+        chdir: "{{ app_remote_dir }}"
       environment:
-        GOALS_IMAGE: "{{ goals_image_effective }}"
-        GOALS_DATA_DIR: "{{ goals_data_dir }}"
-        GOALS_BIND_IP: "{{ goals_bind_ip }}"
-        GOALS_PORT: "{{ goals_port }}"
+        APP_IMAGE: "{{ app_image_effective }}"
+        APP_DATA_DIR: "{{ app_data_dir }}"
+        APP_BIND_IP: "{{ app_bind_ip }}"
+        APP_PORT: "{{ app_port }}"
 
     - name: Reload Nginx
       service:
@@ -138,4 +138,4 @@
 
     - name: Done
       debug:
-        msg: "OK: deployed {{ goals_image_effective }}"
+        msg: "OK: deployed {{ app_image_effective }}"

@@ -18,4 +18,4 @@ scp \
 ssh "$HOST" \
 	"cd '$REMOTE_DIR' \
 	&& chmod +x deploy-on-server.sh \
-	&& GOALS_IMAGE=$(printf %q "$IMAGE") ./deploy-on-server.sh"
+	&& APP_IMAGE=$(printf %q "$IMAGE") ./deploy-on-server.sh"

@@ -1,13 +1,13 @@
 services:
   web:
-    image: ${GOALS_IMAGE:-ghcr.io/danielmoessner/goals.danielmoessner.de:latest}
+    image: ${APP_IMAGE:-ghcr.io/danielmoessner/goals.danielmoessner.de:latest}
     restart: unless-stopped
     user: "999:33"
     ports:
-      - "${GOALS_BIND_IP:-127.0.0.1}:${GOALS_PORT:-8080}:8080"
+      - "${APP_BIND_IP:-127.0.0.1}:${APP_PORT:-8080}:8080"
     command: >-
       gunicorn --chdir /django config.wsgi:application
       --bind 0.0.0.0:8080 --timeout 240 --graceful-timeout 30
       -w 2 --access-logfile - --error-logfile -
     volumes:
-      - ${GOALS_DATA_DIR:-/home/goals.danielmoessner.de/tmp}:/django/tmp
+      - ${APP_DATA_DIR:-/home/goals.danielmoessner.de/tmp}:/django/tmp

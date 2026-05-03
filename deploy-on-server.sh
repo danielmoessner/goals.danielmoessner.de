@@ -1,14 +1,18 @@
 #!/usr/bin/env bash
 set -euo pipefail
 
-DATA_DIR="${GOALS_DATA_DIR:-/home/goals.danielmoessner.de/tmp}"
+DATA_DIR="${APP_DATA_DIR:-${GOALS_DATA_DIR:-/home/goals.danielmoessner.de/tmp}}"
 
-: "${GOALS_IMAGE:?ERROR: GOALS_IMAGE is required}"
+if [[ -z "${APP_IMAGE:-}" && -n "${GOALS_IMAGE:-}" ]]; then
+	APP_IMAGE="$GOALS_IMAGE"
+fi
 
-export GOALS_IMAGE
-export GOALS_DATA_DIR="$DATA_DIR"
-export GOALS_BIND_IP="${GOALS_BIND_IP:-127.0.0.1}"
-export GOALS_PORT="${GOALS_PORT:-8080}"
+: "${APP_IMAGE:?ERROR: APP_IMAGE is required}"
+
+export APP_IMAGE
+export APP_DATA_DIR="$DATA_DIR"
+export APP_BIND_IP="${APP_BIND_IP:-${GOALS_BIND_IP:-127.0.0.1}}"
+export APP_PORT="${APP_PORT:-${GOALS_PORT:-8080}}"
 
 mkdir -p "$DATA_DIR/static" "$DATA_DIR/media"
 
@@ -17,6 +21,4 @@ docker compose run --rm --no-deps web python manage.py migrate --noinput
 docker compose run --rm --no-deps web python manage.py collectstatic --noinput
 docker compose up -d --remove-orphans
 
-systemctl reload apache2
-
-echo "OK: deployed $GOALS_IMAGE"
+echo "OK: deployed $APP_IMAGE"

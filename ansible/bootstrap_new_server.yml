@@ -4,7 +4,7 @@
 # 2) migrate tmp/ from old -> new (secrets.json stays manual)
 # 3) deploy the current image
 #
-# Requires an inventory containing both `goals_old` (old) and `goals` (new).
+# Requires an inventory containing both `app_old` (old) and `app` (new).
 
 - import_playbook: provision.yml
 - import_playbook: migrate.yml

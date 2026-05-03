@@ -1,21 +1,19 @@
-goals_remote_dir: /home/goals.danielmoessner.de
+app_remote_dir: /home/goals.danielmoessner.de
 
-goals_data_dir: /home/goals.danielmoessner.de/tmp
+app_data_dir: /home/goals.danielmoessner.de/tmp
 
-goals_bind_ip: 127.0.0.1
+app_bind_ip: 127.0.0.1
 
-goals_port: 8080
+app_port: 8080
 
-goals_server_name: goals.danielmoessner.de
+app_domain: goals.danielmoessner.de
 
-goals_nginx_site_name: goals.danielmoessner.de
+app_nginx_site_name: goals.danielmoessner.de
 
-goals_client_max_body_size: 50m
+app_client_max_body_size: 50m
 
-goals_enable_https: true
+app_domain_aliases: []
 
-goals_server_aliases: []
+app_certbot_webroot: /var/www/certbot
 
-goals_certbot_webroot: /var/www/certbot
-
-goals_image_repo: ghcr.io/danielmoessner/goals.danielmoessner.de
+app_image_repo: ghcr.io/danielmoessner/goals.danielmoessner.de

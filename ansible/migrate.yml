@@ -2,8 +2,8 @@
 # Migrate the runtime state from the old server to the new one.
 #
 # Inventory requirements:
-# - group `goals_old`: old server
-# - group `goals`:     new server
+# - group `app_old`: old server
+# - group `app`:     new server
 #
 # Notes:
 # - Uses a local staging dir on the Ansible control machine.
@@ -13,17 +13,17 @@
   hosts: localhost
   gather_facts: false
   tasks:
-    - name: Assert inventory contains exactly one goals_old and one goals host
+    - name: Assert inventory contains exactly one app_old and one app host
       assert:
         that:
-          - groups['goals_old'] is defined
-          - groups['goals_old'] | length == 1
-          - groups['goals'] is defined
-          - groups['goals'] | length == 1
-        fail_msg: "This playbook requires exactly one host in groups 'goals_old' and 'goals'."
+          - groups['app_old'] is defined
+          - groups['app_old'] | length == 1
+          - groups['app'] is defined
+          - groups['app'] | length == 1
+        fail_msg: "This playbook requires exactly one host in groups 'app_old' and 'app'."
 
 - name: Ensure rsync is available (old server)
-  hosts: goals_old
+  hosts: app_old
   become: true
   tasks:
     - name: Install rsync
@@ -34,7 +34,7 @@
         state: present
 
 - name: Ensure rsync is available and data dirs exist (new server)
-  hosts: goals
+  hosts: app
   become: true
   tasks:
     - name: Install rsync
@@ -52,12 +52,12 @@
         group: www-data
         mode: "2770"
       loop:
-        - "{{ goals_data_dir }}"
-        - "{{ goals_data_dir }}/static"
-        - "{{ goals_data_dir }}/media"
+        - "{{ app_data_dir }}"
+        - "{{ app_data_dir }}/static"
+        - "{{ app_data_dir }}/media"
 
 - name: Pull tmp/ from old server into local staging
-  hosts: goals_old
+  hosts: app_old
   vars:
     rsync_excludes:
       - "--exclude=secrets.json"
@@ -69,27 +69,27 @@
     - name: Create local staging directory
       tempfile:
         state: directory
-        suffix: goals-tmp-migration
+        suffix: app-tmp-migration
       delegate_to: localhost
       register: stage_dir
       run_once: true
 
     - name: Persist staging directory path
       set_fact:
-        goals_migration_stage_dir: "{{ stage_dir.path }}"
+        app_migration_stage_dir: "{{ stage_dir.path }}"
       delegate_to: localhost
       delegate_facts: true
       run_once: true
 
     - name: Pull tmp/ from old server into staging (excluding secrets.json)
       synchronize:
-        src: "{{ goals_data_dir }}/"
-        dest: "{{ hostvars['localhost'].goals_migration_stage_dir }}/"
+        src: "{{ app_data_dir }}/"
+        dest: "{{ hostvars['localhost'].app_migration_stage_dir }}/"
         mode: pull
         rsync_opts: "{{ rsync_common}}"
 
 - name: Push tmp/ from local staging to new server
-  hosts: goals
+  hosts: app
   vars:
     rsync_common:
       - "--archive"
@@ -98,8 +98,8 @@
   tasks:
     - name: Push tmp/ from staging to new server (never overwrite existing)
       synchronize:
-        src: "{{ hostvars['localhost'].goals_migration_stage_dir }}/"
-        dest: "{{ goals_data_dir }}/"
+        src: "{{ hostvars['localhost'].app_migration_stage_dir }}/"
+        dest: "{{ app_data_dir }}/"
         mode: push
         rsync_opts: "{{ rsync_common + ['--ignore-existing'] }}"
 
@@ -109,6 +109,6 @@
   tasks:
     - name: Remove staging directory
       file:
-        path: "{{ goals_migration_stage_dir }}"
+        path: "{{ app_migration_stage_dir }}"
         state: absent
-      when: goals_migration_stage_dir is defined
+      when: app_migration_stage_dir is defined

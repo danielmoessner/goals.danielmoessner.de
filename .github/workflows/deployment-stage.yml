@@ -87,8 +87,8 @@ jobs:
         run: |
           set -euo pipefail
           cat > inventory.ini <<EOF
-          [goals]
-          goals-prod ansible_host=${{ secrets.DEPLOY_HOST }} ansible_user=${{ secrets.DEPLOY_USER }}
+          [app]
+          app-prod ansible_host=${{ secrets.DEPLOY_HOST }} ansible_user=${{ secrets.DEPLOY_USER }}
           EOF
 
       - name: Deploy (Ansible)
@@ -99,6 +99,6 @@ jobs:
             -i inventory.ini \
             --private-key ~/.ssh/id_ed25519 \
             ansible/deploy.yml \
-            -e "goals_image_repo=ghcr.io/${{ github.repository }}" \
-            -e "goals_remote_dir=${{ secrets.DEPLOY_REMOTE_DIR }}" \
-            -e "goals_data_dir=${{ secrets.DEPLOY_REMOTE_DIR }}/tmp"
+            -e "app_image_repo=ghcr.io/${{ github.repository }}" \
+            -e "app_remote_dir=${{ secrets.DEPLOY_REMOTE_DIR }}" \
+            -e "app_data_dir=${{ secrets.DEPLOY_REMOTE_DIR }}/tmp"
