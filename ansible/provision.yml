@@ -6,6 +6,7 @@
   vars:
     nginx_site_available: "/etc/nginx/sites-available/{{ goals_nginx_site_name }}"
     nginx_site_enabled: "/etc/nginx/sites-enabled/{{ goals_nginx_site_name }}"
+    le_fullchain: "/etc/letsencrypt/live/{{ goals_server_name }}/fullchain.pem"
 
   handlers:
     - name: Test nginx config
@@ -26,6 +27,7 @@
           - rsync
           - nginx
           - certbot
+          - ssl-cert
         state: present
 
     - name: Set up Docker apt repository (keyrings dir)
@@ -95,17 +97,6 @@
         enabled: true
         state: started
 
-    - name: Gather service facts
-      service_facts:
-
-    - name: Stop and disable Apache (take over :80)
-      service:
-        name: apache2
-        enabled: false
-        state: stopped
-      when: goals_disable_apache | default(false) | bool
-      failed_when: false
-
     - name: Ensure project directory exists
       file:
         path: "{{ goals_remote_dir }}"
@@ -142,18 +133,20 @@
         group: root
         mode: "0644"
 
-    - name: Configure Nginx site
+    - name: Configure goals Nginx site (domain HTTP + optional HTTPS)
       template:
-        src: "{{ playbook_dir }}/templates/nginx-goals.conf.j2"
+        src: "{{ playbook_dir }}/templates/nginx-goals-https.conf.j2"
         dest: "{{ nginx_site_available }}"
         owner: root
         group: root
         mode: "0644"
+      vars:
+        goals_tls_enabled: false
       notify:
         - Test nginx config
         - Restart nginx
 
-    - name: Enable Nginx site
+    - name: Enable goals Nginx site
       file:
         src: "{{ nginx_site_available }}"
         dest: "{{ nginx_site_enabled }}"
@@ -162,7 +155,27 @@
         - Test nginx config
         - Restart nginx
 
-    - name: Flush handlers (apply Nginx config)
+    - name: Configure Debian default Nginx site (serve server IP over HTTP+HTTPS)
+      template:
+        src: "{{ playbook_dir }}/templates/nginx-default.conf.j2"
+        dest: /etc/nginx/sites-available/default
+        owner: root
+        group: root
+        mode: "0644"
+      notify:
+        - Test nginx config
+        - Restart nginx
+
+    - name: Enable Debian default Nginx site (serve server IP)
+      file:
+        src: /etc/nginx/sites-available/default
+        dest: /etc/nginx/sites-enabled/default
+        state: link
+      notify:
+        - Test nginx config
+        - Restart nginx
+
+    - name: Flush handlers (apply HTTP vhosts)
       meta: flush_handlers
 
     - name: Ensure Nginx is enabled + running
@@ -171,7 +184,13 @@
         enabled: true
         state: started
 
-    - name: Obtain/renew Let's Encrypt certificate (HTTP-01 via webroot)
+    - name: Check Let's Encrypt certificate exists
+      stat:
+        path: "{{ le_fullchain }}"
+      register: le_cert
+      when: goals_enable_https | default(false) | bool
+
+    - name: Obtain Let's Encrypt certificate (HTTP-01 via webroot)
       command: >-
         certbot certonly --webroot -w {{ goals_certbot_webroot }}
         --agree-tos --non-interactive
@@ -181,40 +200,42 @@
         {% for alias in goals_server_aliases | default([]) %}-d {{ alias }} {% endfor %}
       register: certbot_result
       changed_when: "'Congratulations!' in (certbot_result.stdout | default(''))"
-      when: goals_enable_https | default(false) | bool
+      when: goals_enable_https | default(false) | bool and not le_cert.stat.exists
 
-    - name: Check Let's Encrypt certificate exists
+    - name: Re-check Let's Encrypt certificate exists
       stat:
-        path: "/etc/letsencrypt/live/{{ goals_server_name }}/fullchain.pem"
-      register: le_cert
+        path: "{{ le_fullchain }}"
+      register: le_cert_after
       when: goals_enable_https | default(false) | bool
 
     - name: Fail if certificate is missing after certbot
       fail:
-        msg: "Expected /etc/letsencrypt/live/{{ goals_server_name }}/fullchain.pem to exist, but it does not. Ensure DNS for {{ goals_server_name }} points to this server and port 80 is reachable."
+        msg: "Expected {{ le_fullchain }} to exist, but it does not. Ensure DNS for {{ goals_server_name }} points to this server and port 80 is reachable."
       when:
         - goals_enable_https | default(false) | bool
-        - not le_cert.stat.exists
+        - not le_cert_after.stat.exists
 
-    - name: Configure Nginx HTTPS site
+    - name: Enable TLS in goals Nginx site
       template:
         src: "{{ playbook_dir }}/templates/nginx-goals-https.conf.j2"
         dest: "{{ nginx_site_available }}"
         owner: root
         group: root
         mode: "0644"
+      vars:
+        goals_tls_enabled: true
       notify:
         - Test nginx config
         - Restart nginx
       when:
         - goals_enable_https | default(false) | bool
-        - le_cert.stat.exists
+        - le_cert_after.stat.exists
 
-    - name: Flush handlers (enable HTTPS config)
+    - name: Flush handlers (apply TLS vhost)
       meta: flush_handlers
       when:
         - goals_enable_https | default(false) | bool
-        - le_cert.stat.exists
+        - le_cert_after.stat.exists
 
     - name: Ensure certbot renewal timer is enabled (if available)
       service:
@@ -228,4 +249,4 @@
       debug:
         msg:
           - "Then deploy with: ansible-playbook ansible/deploy.yml (or pass -e goals_image=...)"
-          - "HTTPS: re-run provisioning with -e goals_enable_https=true after DNS cutover."
+          - "If goals_enable_https=true, certbot uses --register-unsafely-without-email."

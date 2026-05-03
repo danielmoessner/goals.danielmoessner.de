@@ -25,13 +25,6 @@ Edit `ansible/inventory/production/hosts.ini` and add your host.
 ansible-playbook ansible/provision.yml
 ```
 
-If the server already runs Apache, Nginx will fail to start because port `:80` is in use.
-To let Ansible stop/disable Apache during provisioning:
-
-```bash
-ansible-playbook ansible/provision.yml -e goals_disable_apache=true
-```
-
 ## Manual secrets step
 
 Create the file on the server:
