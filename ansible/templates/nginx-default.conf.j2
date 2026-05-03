@@ -1,12 +1,13 @@
-# Default Nginx site (serves the server IP).
-# Includes an HTTPS default_server using the Debian snakeoil certificate.
-# Note: Browsers will warn on https://<ip> because this is a self-signed cert.
-
 server {
     listen 80 default_server;
     listen [::]:80 default_server;
-
     server_name _;
+
+    # Let's Encrypt HTTP-01 challenge (certbot --webroot)
+    location /.well-known/acme-challenge/ {
+        root {{ app_certbot_webroot }};
+        try_files $uri =404;
+    }
 
     root /var/www/html;
     index index.html index.nginx-debian.html;
@@ -19,7 +20,6 @@ server {
 server {
     listen 443 ssl http2 default_server;
     listen [::]:443 ssl http2 default_server;
-
     server_name _;
 
     ssl_certificate /etc/ssl/certs/ssl-cert-snakeoil.pem;
