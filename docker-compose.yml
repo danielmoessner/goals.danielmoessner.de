@@ -1,5 +1,6 @@
 services:
   web:
+    mem_limit: 256m
     image: ${APP_IMAGE:-ghcr.io/danielmoessner/goals.danielmoessner.de:latest}
     restart: unless-stopped
     user: "999:33"
