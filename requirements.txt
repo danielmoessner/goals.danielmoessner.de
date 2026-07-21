@@ -5,7 +5,7 @@ django-filebrowser-no-grappelli==4.0.2
 django-tinymce==4.1.0
 djlint==1.36.4
 isort==5.13.2
-pillow==11.0.0
+pillow==12.3.0
 pip-check==2.9
 pipdeptree==2.24.0
 pytest-django==4.9.0
